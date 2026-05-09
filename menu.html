@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu — Pizzeria Le Reginelle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream:    #EAE0CC;
+      --cream2:   #D8CBAF;
+      --red:      #8B1A2A;
+      --red-dark: #611220;
+      --gold:     #B8721A;
+      --gold-lt:  #D4973A;
+      --blue:     #2B4C82;
+      --brown:    #5A3010;
+      --text:     #1A0C06;
+      --nav-h: 70px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Josefin Sans', sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+      background: #F2E8D9;
+    }
+
+    /* ─── HEADER ─── */
+    header { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: rgba(234,224,204,0.97); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(139,26,42,0.13); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; color: var(--red); text-decoration: none; display: flex; align-items: center; gap: 9px; }
+    .desktop-nav ul { list-style: none; display: flex; align-items: center; gap: 2px; }
+    .desktop-nav li { position: relative; }
+    .desktop-nav li > a { display: flex; align-items: center; gap: 5px; padding: 10px 18px; text-decoration: none; font-size: 0.68rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text); transition: color 0.2s; position: relative; }
+    .desktop-nav li > a::after { content: ''; position: absolute; bottom: 5px; left: 18px; right: 18px; height: 1px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.25s ease; }
+    .desktop-nav li:hover > a { color: var(--red); }
+    .desktop-nav li:hover > a::after { transform: scaleX(1); }
+    .desktop-nav li.active > a { color: var(--red); }
+    .desktop-nav li.active > a::after { transform: scaleX(1); }
+    .ham { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .ham span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s ease; }
+    .ham.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .ham.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .ham.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mob-nav { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; background: rgba(234,224,204,0.97); border-bottom: 1px solid rgba(139,26,42,0.12); z-index: 999; max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1); }
+    .mob-nav.open { max-height: 220px; }
+    .mob-nav ul { list-style: none; padding: 10px 0 20px; }
+    .mob-nav ul li a { display: block; padding: 13px 7%; font-size: 0.68rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; text-decoration: none; color: var(--text); border-bottom: 1px solid rgba(139,26,42,.07); transition: color 0.2s; }
+    .mob-nav ul li:last-child a { border-bottom: none; }
+    .mob-nav ul li a:hover, .mob-nav ul li a.active-link { color: var(--red); }
+
+    /* ─── CATEGORY NAV ─── */
+    .cat-nav {
+      position: sticky; top: var(--nav-h); z-index: 900;
+      background: rgba(216,203,175,0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(139,26,42,0.12);
+      display: flex; justify-content: center; gap: 0;
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .cat-nav::-webkit-scrollbar { display: none; }
+    .cat-btn {
+      flex-shrink: 0; background: none; border: none;
+      padding: 14px 20px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.6rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--brown); cursor: pointer; position: relative; transition: color 0.2s;
+    }
+    .cat-btn::after { content: ''; position: absolute; bottom: 0; left: 20px; right: 20px; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: center; transition: transform 0.25s ease; }
+    .cat-btn:hover { color: var(--red); }
+    .cat-btn.active { color: var(--red); }
+    .cat-btn.active::after { transform: scaleX(1); }
+
+    /* ─── PAGE HERO ─── */
+    .menu-hero {
+      padding-top: calc(var(--nav-h) + 53px);
+      padding-bottom: 52px; text-align: center;
+      position: relative; overflow: hidden;
+      background: transparent;
+    }
+    .menu-hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 85% 20%, rgba(184,114,26,.09) 0%, transparent 50%),
+        radial-gradient(ellipse at 15% 80%, rgba(139,26,42,.05) 0%, transparent 50%);
+    }
+    .menu-hero .eyebrow { font-size: 0.6rem; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .menu-hero .eyebrow .rule { display: block; width: 24px; height: 1px; background: var(--gold); opacity: .5; }
+    .menu-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem,5vw,4.2rem); font-weight: 700; color: var(--text); line-height: 1.05; }
+    .menu-hero h1 em { font-style: italic; color: var(--red); }
+    .menu-hero p { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-style: italic; color: var(--brown); margin-top: 12px; opacity: .8; }
+
+    /* ─── MENU CONTENT ─── */
+    .menu-wrap { max-width: 820px; margin: 0 auto; padding: 0 6% 100px; }
+
+    .cat-section { padding-top: 70px; opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .cat-section.visible { opacity: 1; transform: translateY(0); }
+
+    .cat-header { display: flex; align-items: center; gap: 18px; margin-bottom: 32px; }
+    .cat-header .cat-icon { font-size: 1.5rem; }
+    .cat-header h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--text); }
+    .cat-header h2 em { font-style: italic; color: var(--red); }
+    .cat-rule { flex: 1; height: 1px; background: linear-gradient(to right, rgba(139,26,42,.18), transparent); }
+
+    .menu-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 18px 0; border-bottom: 1px solid rgba(90,48,16,.10); gap: 20px; }
+    .menu-item:last-child { border-bottom: none; }
+    .item-left { flex: 1; }
+    .item-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .item-desc { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-weight: 300; font-style: italic; color: var(--brown); line-height: 1.5; }
+    .item-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .tag { font-size: 0.5rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 8px; }
+    .tag-new  { background: rgba(139,26,42,.08);  color: var(--red);   border: 1px solid rgba(139,26,42,.2); }
+    .tag-veg  { background: rgba(46,107,24,.08);  color: #2E6B18;      border: 1px solid rgba(46,107,24,.2); }
+    .tag-pick { background: rgba(184,114,26,.12); color: #7A4A08;      border: 1px solid rgba(184,114,26,.3); }
+    .item-price { font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; color: var(--red); white-space: nowrap; padding-top: 3px; }
+
+    .sec-divider { width: 100%; height: 1px; margin: 60px 0 0; background: linear-gradient(to right, transparent, rgba(139,26,42,.12), transparent); }
+
+    /* ─── FOOTER NOTE ─── */
+    .menu-note { text-align: center; padding: 48px 6% 60px; max-width: 560px; margin: 0 auto; }
+    .menu-note p { font-family: 'Cormorant Garamond', serif; font-size: 0.88rem; font-style: italic; color: var(--brown); opacity: .65; line-height: 1.8; }
+    .menu-note a { display: inline-block; margin-top: 22px; background: var(--red); color: #fff; text-decoration: none; font-size: 0.64rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; padding: 14px 32px; transition: all 0.22s ease; }
+    .menu-note a:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(139,26,42,.25); }
+
+    @media (max-width: 700px) {
+      .desktop-nav { display: none; } .ham { display: flex; } .mob-nav { display: block; }
+      .cat-btn { padding: 12px 14px; font-size: 0.55rem; }
+      .menu-hero h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="index.html"><svg width="48" height="52" viewBox="0 0 48 52" xmlns="http://www.w3.org/2000/svg"><g fill="#B8941A"><polygon points="2,22 6,8 10,22"/><polygon points="10,22 14,6 18,22"/><polygon points="18,22 24,3 30,22"/><polygon points="30,22 34,6 38,22"/><polygon points="38,22 42,8 46,22"/><rect x="2" y="20" width="44" height="5" rx="1"/><circle cx="6" cy="8" r="2.2"/><circle cx="14" cy="6" r="2.2"/><circle cx="24" cy="3" r="2.4"/><circle cx="34" cy="6" r="2.2"/><circle cx="42" cy="8" r="2.2"/></g><path d="M4,26 Q24,24 44,26 L26,51 Q24,53 22,51 Z" fill="#8B1A2A"/><path d="M4,26 Q24,21 44,26 Q24,32 4,26 Z" fill="#A52030"/><path d="M8,28 Q24,25 40,28 L25,49 Q24,50 23,49 Z" fill="#F5EDD8"/><circle cx="24" cy="36" r="6.5" fill="#7A1020"/><circle cx="24" cy="36" r="3" fill="#8B1A2A"/><circle cx="22" cy="34" r="1.2" fill="rgba(255,255,255,0.55)"/><circle cx="14" cy="31" r="1.3" fill="#8B1A2A" opacity="0.7"/><circle cx="34" cy="30" r="1.3" fill="#8B1A2A" opacity="0.7"/><circle cx="16" cy="38" r="1.1" fill="#8B1A2A" opacity="0.6"/><circle cx="32" cy="39" r="1.1" fill="#8B1A2A" opacity="0.6"/><ellipse cx="24" cy="49" rx="1.8" ry="1.2" fill="#F5EDD8" opacity="0.7"/></svg></a>
+  <nav class="desktop-nav">
+    <ul>
+      <li class="active"><a href="menu.html">Menu</a></li>
+      <li><a href="index.html#">Chi Siamo</a></li>
+      <li><a href="index.html#">Contatti</a></li>
+    </ul>
+  </nav>
+  <div class="ham" id="ham"><span></span><span></span><span></span></div>
+</header>
+
+<div class="mob-nav" id="mobNav">
+  <ul>
+    <li><a href="menu.html" class="active-link">Menu</a></li>
+    <li><a href="index.html">Chi Siamo</a></li>
+    <li><a href="index.html">Contatti</a></li>
+  </ul>
+</div>
+
+<!-- CATEGORY NAV -->
+<nav class="cat-nav" id="catNav">
+  <button class="cat-btn active" data-target="pizze-classiche">Pizze Classiche</button>
+  <button class="cat-btn" data-target="pizze-speciali">Pizze Speciali</button>
+  <button class="cat-btn" data-target="fritti">Fritti & Antipasti</button>
+  <button class="cat-btn" data-target="dolci">Dolci</button>
+  <button class="cat-btn" data-target="bevande">Bevande</button>
+</nav>
+
+<!-- HERO -->
+<div class="menu-hero">
+  <p class="eyebrow"><span class="rule"></span>Dal 1987 · Napoli<span class="rule"></span></p>
+  <h1>Il nostro<br><em>Menu</em></h1>
+  <p>Ingredienti freschi, impasto a lunga lievitazione, forno a legna.</p>
+</div>
+
+<!-- MENU CONTENT -->
+<div class="menu-wrap">
+
+  <!-- PIZZE CLASSICHE -->
+  <section class="cat-section" id="pizze-classiche">
+    <div class="cat-header">
+      <span class="cat-icon">🍕</span>
+      <h2>Pizze <em>Classiche</em></h2>
+      <div class="cat-rule"></div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Margherita</div>
+        <div class="item-desc">Pomodoro San Marzano DOP, fior di latte, basilico fresco, olio EVO</div>
+        <div class="item-tags"><span class="tag tag-veg">Vegetariana</span></div>
+      </div>
+      <div class="item-price">€ 8,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Marinara</div>
+        <div class="item-desc">Pomodoro San Marzano, aglio, origano, olio EVO</div>
+        <div class="item-tags"><span class="tag tag-veg">Vegetariana</span></div>
+      </div>
+      <div class="item-price">€ 7,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Napoletana</div>
+        <div class="item-desc">Pomodoro, mozzarella, acciughe del Cantabrico, capperi di Pantelleria</div>
+      </div>
+      <div class="item-price">€ 10,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Quattro Stagioni</div>
+        <div class="item-desc">Pomodoro, mozzarella, prosciutto cotto, funghi trifolati, olive, carciofi</div>
+      </div>
+      <div class="item-price">€ 11,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Capricciosa</div>
+        <div class="item-desc">Pomodoro, mozzarella, prosciutto cotto, funghi, olive nere, carciofini</div>
+      </div>
+      <div class="item-price">€ 11,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Diavola</div>
+        <div class="item-desc">Pomodoro San Marzano, provola affumicata, salame piccante calabrese</div>
+      </div>
+      <div class="item-price">€ 10,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Bufala</div>
+        <div class="item-desc">Pomodoro, mozzarella di bufala campana DOP, basilico fresco</div>
+        <div class="item-tags"><span class="tag tag-veg">Vegetariana</span></div>
+      </div>
+      <div class="item-price">€ 13,00</div>
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <!-- PIZZE SPECIALI -->
+  <section class="cat-section" id="pizze-speciali">
+    <div class="cat-header">
+      <span class="cat-icon">⭐</span>
+      <h2>Pizze <em>Speciali</em></h2>
+      <div class="cat-rule"></div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Le Reginelle</div>
+        <div class="item-desc">Ricotta di pecora, salsiccia di maiale, friarielli saltati, provola affumicata</div>
+        <div class="item-tags"><span class="tag tag-pick">La nostra</span></div>
+      </div>
+      <div class="item-price">€ 13,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Fiori di Zucca</div>
+        <div class="item-desc">Base bianca, fiori di zucca, alici, mozzarella, olio al basilico</div>
+        <div class="item-tags"><span class="tag tag-new">Stagionale</span></div>
+      </div>
+      <div class="item-price">€ 14,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Nduja e Stracciatella</div>
+        <div class="item-desc">Pomodoro, stracciatella pugliese, nduja di Spilinga, cipolla di Tropea in agrodolce</div>
+        <div class="item-tags"><span class="tag tag-pick">Consigliata</span></div>
+      </div>
+      <div class="item-price">€ 14,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Tartufo e Funghi Porcini</div>
+        <div class="item-desc">Base bianca, fior di latte, porcini freschi, crema al tartufo nero, parmigiano</div>
+      </div>
+      <div class="item-price">€ 16,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Pistacchio e Mortadella</div>
+        <div class="item-desc">Base bianca, fior di latte, crema di pistacchio di Bronte, mortadella, granella</div>
+        <div class="item-tags"><span class="tag tag-new">New</span></div>
+      </div>
+      <div class="item-price">€ 15,00</div>
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <!-- FRITTI & ANTIPASTI -->
+  <section class="cat-section" id="fritti">
+    <div class="cat-header">
+      <span class="cat-icon">🤌</span>
+      <h2>Fritti & <em>Antipasti</em></h2>
+      <div class="cat-rule"></div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Frittatina di Pasta</div>
+        <div class="item-desc">Pasta fritta con besciamella, prosciutto cotto e piselli, impanata e dorata</div>
+        <div class="item-tags"><span class="tag tag-pick">Napoletana DOC</span></div>
+      </div>
+      <div class="item-price">€ 3,50</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Montanara</div>
+        <div class="item-desc">Pizza fritta con pomodoro San Marzano, parmigiano e basilico</div>
+      </div>
+      <div class="item-price">€ 4,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Crocchè di Patate</div>
+        <div class="item-desc">Crocchette di patate con provola filante — 3 pezzi</div>
+        <div class="item-tags"><span class="tag tag-veg">Vegetariana</span></div>
+      </div>
+      <div class="item-price">€ 5,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Antipasto Le Reginelle</div>
+        <div class="item-desc">Salumi campani, formaggi stagionati, olive, friarielli sott'olio, bruschettine</div>
+      </div>
+      <div class="item-price">€ 13,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Bruschetta al Pomodoro</div>
+        <div class="item-desc">Pane casereccio tostato, pomodorino datterino, aglio, basilico, olio EVO</div>
+        <div class="item-tags"><span class="tag tag-veg">Vegetariana</span></div>
+      </div>
+      <div class="item-price">€ 6,00</div>
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <!-- DOLCI -->
+  <section class="cat-section" id="dolci">
+    <div class="cat-header">
+      <span class="cat-icon">🍮</span>
+      <h2><em>Dolci</em></h2>
+      <div class="cat-rule"></div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Pastiera Napoletana</div>
+        <div class="item-desc">Torta tradizionale con grano cotto, ricotta, canditi e acqua di fiori d'arancio</div>
+        <div class="item-tags"><span class="tag tag-pick">Tradizionale</span></div>
+      </div>
+      <div class="item-price">€ 5,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Babà al Rum</div>
+        <div class="item-desc">Lievitato soffice imbevuto nel rum, con crema chantilly e amarene</div>
+      </div>
+      <div class="item-price">€ 5,00</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Tiramisù della Casa</div>
+        <div class="item-desc">Ricetta classica con savoiardi, mascarpone, caffè napoletano e cacao</div>
+      </div>
+      <div class="item-price">€ 5,50</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Gelato Artigianale</div>
+        <div class="item-desc">2 gusti a scelta — chiedi al cameriere i gusti del giorno</div>
+      </div>
+      <div class="item-price">€ 4,50</div>
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <!-- BEVANDE -->
+  <section class="cat-section" id="bevande">
+    <div class="cat-header">
+      <span class="cat-icon">🍷</span>
+      <h2><em>Bevande</em></h2>
+      <div class="cat-rule"></div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Acqua Naturale / Frizzante</div>
+        <div class="item-desc">75 cl</div>
+      </div>
+      <div class="item-price">€ 2,50</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Birra alla Spina</div>
+        <div class="item-desc">Peroni Nastro Azzurro — piccola 33cl / media 50cl</div>
+      </div>
+      <div class="item-price">€ 4 / 6</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Vino della Casa</div>
+        <div class="item-desc">Rosso o bianco campano — calice / quarto / mezzo / bottiglia</div>
+      </div>
+      <div class="item-price">€ 4 / 5 / 8 / 14</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Limoncello di Sorrento</div>
+        <div class="item-desc">Produzione artigianale</div>
+      </div>
+      <div class="item-price">€ 3,50</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Caffè Napoli</div>
+        <div class="item-desc">Espresso — macchiato — corretto — americano</div>
+      </div>
+      <div class="item-price">€ 1,50</div>
+    </div>
+
+    <div class="menu-item">
+      <div class="item-left">
+        <div class="item-name">Bibite</div>
+        <div class="item-desc">Coca-Cola, Fanta, Sprite, San Pellegrino agrumi — 33cl</div>
+      </div>
+      <div class="item-price">€ 3,00</div>
+    </div>
+  </section>
+
+</div><!-- end menu-wrap -->
+
+<!-- FOOTER NOTE -->
+<div class="menu-note">
+  <p>Tutti i nostri ingredienti sono freschi e di stagione.<br>
+  Per allergie o intolleranze, parla con il nostro personale.<br>
+  I prezzi sono IVA inclusa.</p>
+  <a href="index.html">← Torna alla Home</a>
+</div>
+
+<script>
+/* ─── MOBILE MENU ─── */
+document.getElementById('ham').addEventListener('click', function () {
+  this.classList.toggle('active');
+  document.getElementById('mobNav').classList.toggle('open');
+});
+
+/* ─── CATEGORY NAV — smooth scroll + active state ─── */
+const catBtns = document.querySelectorAll('.cat-btn');
+catBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = document.getElementById(btn.dataset.target);
+    if(!target) return;
+    const offset = document.querySelector('.cat-nav').offsetHeight + document.querySelector('header').offsetHeight;
+    const top = target.getBoundingClientRect().top + window.scrollY - offset - 16;
+    window.scrollTo({ top, behavior: 'smooth' });
+  });
+});
+
+/* ─── INTERSECTION OBSERVER — highlight active cat + fade in sections ─── */
+const sections = document.querySelectorAll('.cat-section');
+
+const fadeObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+
+const activeObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      catBtns.forEach(b => b.classList.remove('active'));
+      const btn = document.querySelector(`.cat-btn[data-target="${e.target.id}"]`);
+      if(btn) btn.classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+
+sections.forEach(s => { fadeObs.observe(s); activeObs.observe(s); });
+</script>
+</body>
+</html>
