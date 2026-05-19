@@ -331,15 +331,22 @@
     @media (min-width: 600px) { .menu-grid { grid-template-columns: 1fr 1fr; } }
     @media (min-width: 1024px) { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
 
-    .dish-card { background: #181210; overflow: hidden; position: relative; }
-    .dish-img-wrap { overflow: hidden; height: 220px; }
-    .dish-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.55s ease; }
-    .dish-card:hover .dish-img { transform: scale(1.07); }
-    .dish-body { padding: 24px; }
-    .dish-name { font-family: 'Cormorant Garamond', serif; font-size: 1.22rem; font-weight: 400; color: var(--panna); margin-bottom: 8px; }
-    .dish-desc { font-size: 0.74rem; color: rgba(248,245,242,0.45); line-height: 1.65; margin-bottom: 16px; }
-    .dish-footer { display: flex; align-items: center; justify-content: space-between; }
-    .dish-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--beige); }
+    .dish-card {
+      background: #181210; position: relative;
+      border: 1px solid rgba(201,168,112,0.08);
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .dish-card:hover { background: #1e1510; border-color: rgba(201,168,112,0.18); }
+    .dish-num {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 2.8rem; font-weight: 300; color: rgba(201,168,112,0.12);
+      line-height: 1; margin-bottom: 4px; user-select: none;
+    }
+    .dish-body { padding: 28px 24px 24px; }
+    .dish-name { font-family: 'Cormorant Garamond', serif; font-size: 1.22rem; font-weight: 500; color: var(--panna); margin-bottom: 10px; }
+    .dish-desc { font-size: 0.74rem; color: rgba(248,245,242,0.45); line-height: 1.65; margin-bottom: 18px; }
+    .dish-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid rgba(201,168,112,0.1); }
+    .dish-price { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--beige); }
     .dish-tag {
       font-size: 0.48rem; letter-spacing: 2px; text-transform: uppercase;
       padding: 4px 10px; background: rgba(85,107,79,0.2); color: var(--oliva); border: 1px solid rgba(85,107,79,0.3);
@@ -595,10 +602,8 @@
   <div class="panel active" id="panel-pizze">
     <div class="menu-grid">
       <div class="dish-card reveal">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80" alt="Margherita" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">I</p>
           <h3 class="dish-name">Margherita</h3>
           <p class="dish-desc">Pomodoro San Marzano DOP, fior di latte di Agerola, basilico fresco, olio EVO di Ravece</p>
           <div class="dish-footer">
@@ -608,10 +613,8 @@
         </div>
       </div>
       <div class="dish-card reveal delay-1">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" alt="Marinara" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">II</p>
           <h3 class="dish-name">Marinara</h3>
           <p class="dish-desc">Pomodoro San Marzano, aglio, origano selvatico dei Monti Lattari, olio EVO — la più antica</p>
           <div class="dish-footer">
@@ -621,10 +624,8 @@
         </div>
       </div>
       <div class="dish-card reveal delay-2">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1595854341625-f33ee10dbf81?auto=format&fit=crop&w=600&q=80" alt="Diavola" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">III</p>
           <h3 class="dish-name">Diavola</h3>
           <p class="dish-desc">Pomodoro, fior di latte, salame piccante calabrese DOP, peperoncino fresco di Cayenna</p>
           <div class="dish-footer">
@@ -639,30 +640,24 @@
   <div class="panel" id="panel-antipasti">
     <div class="menu-grid">
       <div class="dish-card reveal">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1506354666786-959d6d497f1a?auto=format&fit=crop&w=600&q=80" alt="Bruschetta" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">I</p>
           <h3 class="dish-name">Bruschetta al Pomodoro</h3>
           <p class="dish-desc">Pane casereccio tostato, pomodorini del Piennolo del Vesuvio, aglio, basilico, olio Ravece</p>
           <div class="dish-footer"><span class="dish-price">€ 6,00</span></div>
         </div>
       </div>
       <div class="dish-card reveal delay-1">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80" alt="Burrata" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">II</p>
           <h3 class="dish-name">Burrata di Puglia</h3>
           <p class="dish-desc">Burrata cremosa su pomodorini arrosto, basilico e riduzione di aceto balsamico di Modena IGP</p>
           <div class="dish-footer"><span class="dish-price">€ 11,00</span></div>
         </div>
       </div>
       <div class="dish-card reveal delay-2">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1549451371-64aa98a6f660?auto=format&fit=crop&w=600&q=80" alt="Frittura Napoletana" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">III</p>
           <h3 class="dish-name">Frittura Napoletana</h3>
           <p class="dish-desc">Montanare fritte, crocchè di patate al rosmarino, frittatine di spaghetti, zeppoline al formaggio</p>
           <div class="dish-footer"><span class="dish-price">€ 10,00</span></div>
@@ -674,30 +669,24 @@
   <div class="panel" id="panel-primi">
     <div class="menu-grid">
       <div class="dish-card reveal">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?auto=format&fit=crop&w=600&q=80" alt="Vongole" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">I</p>
           <h3 class="dish-name">Spaghetti alle Vongole</h3>
           <p class="dish-desc">Vongole veraci del Golfo di Napoli, aglio, peperoncino, vino bianco Falanghina, prezzemolo</p>
           <div class="dish-footer"><span class="dish-price">€ 16,00</span></div>
         </div>
       </div>
       <div class="dish-card reveal delay-1">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&fit=crop&w=600&q=80" alt="Ragù" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">II</p>
           <h3 class="dish-name">Rigatoni al Ragù</h3>
           <p class="dish-desc">Il classico ragù napoletano cotto 8 ore con carne mista, ricotta di pecora, pecorino romano</p>
           <div class="dish-footer"><span class="dish-price">€ 14,00</span></div>
         </div>
       </div>
       <div class="dish-card reveal delay-2">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1556761223-4c4282c73f77?auto=format&fit=crop&w=600&q=80" alt="Pappardelle" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">III</p>
           <h3 class="dish-name">Pappardelle ai Funghi</h3>
           <p class="dish-desc">Pappardelle fresche all'uovo, porcini di stagione, tartufo nero pregiato, parmigiano 36 mesi</p>
           <div class="dish-footer"><span class="dish-price">€ 18,00</span></div>
@@ -709,30 +698,24 @@
   <div class="panel" id="panel-dolci">
     <div class="menu-grid">
       <div class="dish-card reveal">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=600&q=80" alt="Tiramisù" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">I</p>
           <h3 class="dish-name">Tiramisù della Casa</h3>
           <p class="dish-desc">Mascarpone artigianale, savoiardi al rum Flor de Caña, espresso napoletano, cacao Valrhona</p>
           <div class="dish-footer"><span class="dish-price">€ 7,00</span></div>
         </div>
       </div>
       <div class="dish-card reveal delay-1">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1488477304112-4944851de03d?auto=format&fit=crop&w=600&q=80" alt="Babà" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">II</p>
           <h3 class="dish-name">Babà al Rum</h3>
           <p class="dish-desc">Il re dei dolci napoletani, inzuppato nel miglior rum giamaicano, con panna fresca montata</p>
           <div class="dish-footer"><span class="dish-price">€ 6,00</span></div>
         </div>
       </div>
       <div class="dish-card reveal delay-2">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=600&q=80" alt="Sfogliatella" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">III</p>
           <h3 class="dish-name">Sfogliatella Riccia</h3>
           <p class="dish-desc">Pasticceria napoletana autentica, ricotta fresca di pecora, scorza d'arancia candita, cannella</p>
           <div class="dish-footer"><span class="dish-price">€ 5,00</span></div>
@@ -744,30 +727,24 @@
   <div class="panel" id="panel-vini">
     <div class="menu-grid">
       <div class="dish-card reveal">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1510626176961-4b57d4fbad03?auto=format&fit=crop&w=600&q=80" alt="Aglianico" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">I</p>
           <h3 class="dish-name">Aglianico del Taburno DOC</h3>
           <p class="dish-desc">Corposo, speziato, note di ciliegia matura, tabacco e cuoio. Perfetto con la pizza e la carne</p>
           <div class="dish-footer"><span class="dish-price">€ 28,00 / bottiglia</span></div>
         </div>
       </div>
       <div class="dish-card reveal delay-1">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1547595628-c61a29f496f0?auto=format&fit=crop&w=600&q=80" alt="Fiano" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">II</p>
           <h3 class="dish-name">Fiano di Avellino DOCG</h3>
           <p class="dish-desc">Elegante e minerale, con sentori di fiori bianchi, nocciola tostata e pesca matura</p>
           <div class="dish-footer"><span class="dish-price">€ 26,00 / bottiglia</span></div>
         </div>
       </div>
       <div class="dish-card reveal delay-2">
-        <div class="dish-img-wrap">
-          <img class="dish-img" src="https://images.unsplash.com/photo-1474722883778-792e7990302f?auto=format&fit=crop&w=600&q=80" alt="Greco" loading="lazy">
-        </div>
         <div class="dish-body">
+          <p class="dish-num">III</p>
           <h3 class="dish-name">Greco di Tufo DOCG</h3>
           <p class="dish-desc">Bianco strutturato della Campania, con bouquet di albicocca, mandorla e fragranze minerali</p>
           <div class="dish-footer"><span class="dish-price">€ 24,00 / bottiglia</span></div>
