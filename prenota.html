@@ -3,734 +3,463 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prenota — Le Reginelle</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Josefin+Sans:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+  <meta name="description" content="Prenota il tuo tavolo da La Reginella — Pizzeria napoletana autentica a Napoli. Prenotazione online semplice e veloce.">
+  <title>Prenota — La Reginella Pizzeria Napoletana</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --cream: #F2E8D9;
-      --red:   #8B1A2A; --red-dark: #611220;
-      --gold:  #B8721A; --brown: #5A3010;
-      --text:  #1A0C06; --nav-h: 70px;
-      --green: #2A6015; --amber: #B8721A; --grey: #9A8878;
+      --bordeaux: #5B1E24; --bordeaux-dark: #3D1319; --bordeaux-light: #7A2B33;
+      --nero: #111111; --panna: #F8F5F2; --oliva: #556B4F; --beige: #C9A870;
+      --text: #1E1208; --text-mid: #4A3028; --nav-h: 80px; --success: #3D8B5A;
     }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { font-family:'Josefin Sans',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--panna); color: var(--text); overflow-x: hidden; min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
 
-    /* ── HEADER ── */
-    header { position:fixed; top:0; left:0; right:0; height:var(--nav-h); background:rgba(242,232,217,0.97); backdrop-filter:blur(10px); border-bottom:1px solid rgba(139,26,42,0.13); z-index:1000; display:flex; align-items:center; justify-content:space-between; padding:0 5%; }
-    .logo { text-decoration:none; display:flex; align-items:center; }
-    .desktop-nav ul { list-style:none; display:flex; align-items:center; gap:2px; }
-    .desktop-nav li { position:relative; }
-    .desktop-nav li > a { display:flex; align-items:center; gap:5px; padding:10px 18px; text-decoration:none; font-size:0.68rem; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:var(--text); transition:color 0.2s; position:relative; }
-    .desktop-nav li > a::after { content:''; position:absolute; bottom:5px; left:18px; right:18px; height:1px; background:var(--red); transform:scaleX(0); transform-origin:left; transition:transform 0.25s ease; }
-    .desktop-nav li:hover > a { color:var(--red); }
-    .desktop-nav li:hover > a::after { transform:scaleX(1); }
-    .ham { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; }
-    .ham span { display:block; width:22px; height:2px; background:var(--text); border-radius:2px; transition:all 0.3s ease; }
-    .ham.active span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
-    .ham.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
-    .ham.active span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
-    .mob-nav { display:none; position:fixed; top:var(--nav-h); left:0; right:0; background:var(--cream); border-bottom:1px solid rgba(139,26,42,0.12); z-index:999; max-height:0; overflow:hidden; transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1); }
-    .mob-nav.open { max-height:220px; }
-    .mob-nav ul { list-style:none; padding:10px 0 20px; }
-    .mob-nav ul li a { display:block; padding:13px 7%; font-size:0.68rem; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; text-decoration:none; color:var(--text); border-bottom:1px solid rgba(139,26,42,.07); transition:color 0.2s; }
-    .mob-nav ul li:last-child a { border-bottom:none; }
-    .mob-nav ul li a:hover { color:var(--red); }
-
-    /* ── LAYOUT ── */
-    .page-wrap { padding-top:calc(var(--nav-h)+44px); padding-bottom:80px; max-width:680px; margin:0 auto; padding-left:6%; padding-right:6%; }
-
-    .page-hero { text-align:center; margin-bottom:36px; }
-    .eyebrow { font-size:0.6rem; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:12px; }
-    .eyebrow .rule { display:block; width:22px; height:1px; background:var(--gold); opacity:.5; }
-    .page-hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:700; color:var(--text); line-height:1.1; }
-    .page-hero h1 em { font-style:italic; color:var(--red); }
-    .page-hero p { font-family:'Cormorant Garamond',serif; font-size:1rem; font-style:italic; color:var(--brown); margin-top:8px; opacity:.8; }
-
-    /* ── STEPS ── */
-    .steps { display:flex; align-items:center; justify-content:center; margin-bottom:36px; }
-    .step { display:flex; flex-direction:column; align-items:center; gap:5px; }
-    .step-dot { width:28px; height:28px; border-radius:50%; border:1.5px solid rgba(139,26,42,.25); display:flex; align-items:center; justify-content:center; font-size:0.6rem; font-weight:600; color:var(--grey); transition:all 0.3s; }
-    .step.done   .step-dot { background:var(--green); border-color:var(--green); color:#fff; }
-    .step.active .step-dot { background:var(--red); border-color:var(--red); color:#fff; }
-    .step-label { font-size:0.5rem; letter-spacing:2px; text-transform:uppercase; color:var(--grey); transition:color 0.3s; }
-    .step.active .step-label { color:var(--red); }
-    .step.done   .step-label { color:var(--green); }
-    .step-line { flex:1; max-width:44px; height:1px; background:rgba(139,26,42,.15); margin:0 5px 20px; }
-
-    /* ── CARD ── */
-    .card { background:rgba(255,252,245,0.7); border:1px solid rgba(139,26,42,.12); padding:28px 24px 32px; margin-bottom:18px; }
-    .card-title { font-size:0.6rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:var(--red); margin-bottom:18px; display:flex; align-items:center; gap:10px; }
-    .card-title::after { content:''; flex:1; height:1px; background:rgba(139,26,42,.13); }
-
-    /* ── DATE CHIPS ── */
-    .date-quick { display:flex; flex-wrap:wrap; gap:8px; }
-    .date-chip { font-family:'Josefin Sans',sans-serif; font-size:0.58rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; padding:9px 14px; border:1px solid rgba(139,26,42,.22); background:transparent; color:var(--brown); cursor:pointer; transition:all 0.18s; text-align:center; }
-    .date-chip:hover  { border-color:var(--red); color:var(--red); }
-    .date-chip.active { background:var(--red); border-color:var(--red); color:#fff; }
-
-    /* ── SERVICE TOGGLE ── */
-    .service-toggle { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px; }
-    .service-btn { padding:12px 10px; border:1px solid rgba(139,26,42,.22); background:transparent; font-family:'Josefin Sans',sans-serif; font-size:0.62rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--brown); cursor:pointer; transition:all 0.18s; text-align:center; display:flex; flex-direction:column; align-items:center; gap:4px; }
-    .service-btn .svc-icon { font-size:1.1rem; }
-    .service-btn:hover  { border-color:var(--red); color:var(--red); }
-    .service-btn.active { background:var(--red); border-color:var(--red); color:#fff; }
-
-    /* ── TIME SLOTS ── */
-    .slots-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(82px,1fr)); gap:9px; margin-top:6px; }
-    .slot { display:flex; flex-direction:column; align-items:center; gap:3px; padding:11px 5px 9px; border:1px solid rgba(139,26,42,.18); background:transparent; cursor:pointer; transition:all 0.18s; font-family:'Josefin Sans',sans-serif; position:relative; }
-    .slot-time  { font-size:0.82rem; font-weight:600; color:var(--text); }
-    .slot-info  { font-size:0.48rem; letter-spacing:1.3px; text-transform:uppercase; }
-    .slot.avail .slot-info { color:var(--green); }
-    .slot.few   .slot-info { color:var(--amber); }
-    .slot.full  { opacity:.35; cursor:not-allowed; border-style:dashed; }
-    .slot.full  .slot-info { color:var(--grey); }
-    .slot:not(.full):hover { border-color:var(--red); }
-    .slot:not(.full):hover .slot-time { color:var(--red); }
-    .slot.selected { background:var(--red); border-color:var(--red); }
-    .slot.selected .slot-time { color:#fff; }
-    .slot.selected .slot-info { color:rgba(255,220,180,.85); }
-    .slot-dot { width:5px; height:5px; border-radius:50%; position:absolute; top:7px; right:7px; }
-    .slot.avail .slot-dot { background:var(--green); }
-    .slot.few   .slot-dot { background:var(--amber); }
-    .slot.full  .slot-dot { background:var(--grey); }
-    .slot.selected .slot-dot { background:rgba(255,220,180,.7); }
-    .slots-legend { display:flex; gap:16px; margin-top:12px; flex-wrap:wrap; }
-    .leg-item { display:flex; align-items:center; gap:6px; font-size:0.5rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--brown); opacity:.7; }
-    .leg-dot { width:7px; height:7px; border-radius:50%; }
-
-    /* ── TABLE GRID ── */
-    .tables-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin-top:6px; }
-    .table-btn {
-      display:flex; flex-direction:column; align-items:center; gap:4px;
-      padding:14px 8px 12px;
-      border:1px solid rgba(139,26,42,.18);
-      background:transparent;
-      cursor:pointer; transition:all 0.2s;
-      font-family:'Josefin Sans',sans-serif;
-      position:relative;
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 1000;
+      padding: 0 6%; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(13,7,4,0.97); backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(201,168,112,0.1);
     }
-    .table-num  { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:var(--text); line-height:1; }
-    .table-seats { font-size:0.5rem; letter-spacing:2px; text-transform:uppercase; color:var(--brown); opacity:.7; }
-    .table-status { font-size:0.5rem; letter-spacing:1.5px; text-transform:uppercase; margin-top:2px; }
-    .table-btn.free   .table-status { color:var(--green); }
-    .table-btn.short  { border-color:rgba(184,114,26,.5); background:rgba(184,114,26,.06); }
-    .table-btn.short  .table-status { color:var(--amber); }
-    .table-btn.short  .table-num    { color:var(--amber); }
-    .table-btn.occupied { opacity:.3; cursor:not-allowed; border-style:dashed; }
-    .table-btn.occupied .table-status { color:var(--grey); }
-    .table-btn.free:hover, .table-btn.short:hover { border-color:var(--red); }
-    .table-btn.selected { background:var(--red); border-color:var(--red); }
-    .table-btn.selected .table-num    { color:#fff; }
-    .table-btn.selected .table-seats  { color:rgba(255,220,180,.7); }
-    .table-btn.selected .table-status { color:rgba(255,220,180,.9); }
-    /* Corner status dot */
-    .table-dot { width:7px; height:7px; border-radius:50%; position:absolute; top:8px; right:8px; }
-    .table-btn.free     .table-dot { background:var(--green); }
-    .table-btn.short    .table-dot { background:var(--amber); }
-    .table-btn.occupied .table-dot { background:var(--grey); }
-    .table-btn.selected .table-dot { background:rgba(255,220,180,.8); }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--panna); letter-spacing: 1.5px; display: flex; flex-direction: column; line-height: 1; }
+    .nav-logo small { font-size: 0.47rem; letter-spacing: 5px; text-transform: uppercase; opacity: 0.45; margin-top: 4px; font-family: 'DM Sans', sans-serif; font-weight: 300; }
+    .nav-links { display: none; list-style: none; gap: 32px; align-items: center; }
+    .nav-links a { font-size: 0.62rem; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: rgba(248,245,242,0.65); transition: color 0.2s; position: relative; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px; background: var(--beige); transform: scaleX(0); transform-origin: left; transition: transform 0.25s ease; }
+    .nav-links a:hover { color: var(--panna); } .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-cta { background: var(--bordeaux) !important; color: var(--panna) !important; padding: 11px 26px; border: 1px solid rgba(201,168,112,0.2); transition: all 0.25s ease !important; }
+    .nav-cta::after { display: none !important; } .nav-cta:hover { background: var(--bordeaux-light) !important; }
+    .ham { display: flex; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; }
+    .ham span { display: block; width: 22px; height: 1.5px; background: var(--panna); transition: all 0.35s ease; }
+    .ham.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .ham.open span:nth-child(2) { opacity: 0; }
+    .ham.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .mob-nav { display: none; position: fixed; inset: 0; z-index: 1100; background: #0D0806; flex-direction: column; align-items: center; justify-content: center; }
+    .mob-nav.open { display: flex; }
+    .mob-nav ul { list-style: none; text-align: center; }
+    .mob-nav ul li a { display: block; padding: 18px 60px; font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem,8vw,3rem); font-style: italic; color: var(--panna); opacity: 0.8; transition: opacity 0.2s; }
+    .mob-nav ul li a:hover { opacity: 1; color: var(--beige); }
+    @media (min-width: 900px) { .ham { display: none; } .nav-links { display: flex; } }
 
-    /* ── SHORT-STAY ALERT ── */
-    .short-alert {
-      display:none;
-      background:rgba(184,114,26,.10);
-      border:1px solid rgba(184,114,26,.4);
-      padding:16px 18px;
-      margin-top:14px;
+    .page-wrap { display: grid; grid-template-columns: 1fr; min-height: 100vh; padding-top: var(--nav-h); }
+    @media (min-width: 1024px) { .page-wrap { grid-template-columns: 1fr 1fr; } }
+
+    .left-panel { position: relative; overflow: hidden; min-height: 40vh; }
+    @media (min-width: 1024px) { .left-panel { position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); } }
+    .left-bg { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat; }
+    .left-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,4,2,0.4) 0%, rgba(13,7,4,0.82) 100%); }
+    .left-content { position: relative; z-index: 2; padding: 60px 48px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
+    .lp-label { font-size: 0.5rem; letter-spacing: 5px; text-transform: uppercase; color: var(--beige); margin-bottom: 14px; }
+    .lp-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(2rem,4vw,3.2rem); color: var(--panna); line-height: 1.1; margin-bottom: 20px; }
+    .lp-title em { font-style: italic; color: var(--beige); }
+    .lp-info { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
+    .lp-info-row { display: flex; align-items: center; gap: 12px; color: rgba(248,245,242,0.7); font-size: 0.82rem; }
+    .lp-hours { background: rgba(248,245,242,0.07); border: 1px solid rgba(248,245,242,0.1); padding: 20px 24px; margin-top: 28px; }
+    .lp-hours strong { color: rgba(248,245,242,0.8); font-size: 0.52rem; letter-spacing: 3px; text-transform: uppercase; display: block; margin-bottom: 12px; }
+    .lp-hours p { font-size: 0.7rem; color: rgba(248,245,242,0.5); line-height: 1.9; }
+
+    .right-panel { padding: 60px 6%; background: var(--panna); }
+    @media (min-width: 768px) { .right-panel { padding: 80px 10%; } }
+
+    .form-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 400; color: var(--nero); line-height: 1.1; margin-bottom: 8px; }
+    .form-title em { font-style: italic; color: var(--bordeaux); }
+    .form-sub { font-size: 0.8rem; color: var(--text-mid); margin-bottom: 44px; line-height: 1.6; }
+
+    .steps { display: flex; margin-bottom: 48px; border-bottom: 1px solid rgba(91,30,36,0.1); }
+    .step-ind { flex: 1; padding: 14px 8px; text-align: center; font-size: 0.5rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(30,18,8,0.3); border-bottom: 2px solid transparent; transition: all 0.3s; }
+    .step-ind .circle { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid currentColor; display: inline-flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 600; margin-right: 6px; }
+    .step-ind.active { color: var(--bordeaux); border-bottom-color: var(--bordeaux); }
+    .step-ind.done { color: var(--oliva); border-bottom-color: var(--oliva); }
+    .step-ind.done .circle { background: var(--oliva); border-color: var(--oliva); color: white; }
+
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+
+    .field { margin-bottom: 24px; }
+    .field label { display: block; font-size: 0.57rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-mid); margin-bottom: 8px; font-weight: 500; }
+    .field input, .field select, .field textarea {
+      width: 100%; padding: 14px 16px; border: 1px solid rgba(91,30,36,0.2);
+      background: white; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+      transition: all 0.25s ease; outline: none; appearance: none;
     }
-    .short-alert.show { display:block; }
-    .short-alert-title { font-size:0.62rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--amber); margin-bottom:8px; }
-    .short-alert p { font-family:'Cormorant Garamond',serif; font-size:0.95rem; font-style:italic; color:var(--brown); line-height:1.6; }
-    .short-alert-btns { display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
-    .alert-btn { font-family:'Josefin Sans',sans-serif; font-size:0.58rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:9px 20px; border:none; cursor:pointer; transition:all 0.2s; }
-    .alert-btn-confirm { background:var(--amber); color:#fff; }
-    .alert-btn-confirm:hover { background:#9A5E10; }
-    .alert-btn-other { background:transparent; border:1px solid rgba(139,26,42,.3); color:var(--red); }
-    .alert-btn-other:hover { background:var(--red); color:#fff; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--bordeaux); box-shadow: 0 0 0 3px rgba(91,30,36,0.08); }
+    .field textarea { resize: vertical; min-height: 100px; }
+    .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234A3028' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .field-err { color: var(--bordeaux); font-size: 0.68rem; margin-top: 6px; display: none; }
+    .field.error input, .field.error select { border-color: var(--bordeaux); }
+    .field.error .field-err { display: block; }
 
-    /* ── GUESTS ── */
-    .guests-row { display:flex; align-items:center; gap:16px; margin-top:6px; }
-    .guests-btn { width:36px; height:36px; border:1px solid rgba(139,26,42,.28); background:transparent; font-size:1.2rem; color:var(--brown); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.18s; flex-shrink:0; }
-    .guests-btn:hover { background:var(--red); border-color:var(--red); color:#fff; }
-    .guests-count { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:var(--text); min-width:40px; text-align:center; }
-    .guests-label { font-size:0.58rem; letter-spacing:2px; text-transform:uppercase; color:var(--brown); opacity:.7; }
-    .guests-warn { font-size:0.58rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--red); margin-top:8px; display:none; }
-    .guests-warn.show { display:block; }
+    .persons-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .p-btn { padding: 12px 4px; border: 1px solid rgba(91,30,36,0.2); background: white; text-align: center; cursor: pointer; font-size: 0.82rem; font-weight: 500; color: var(--text-mid); transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .p-btn:hover { border-color: var(--bordeaux); color: var(--bordeaux); }
+    .p-btn.active { background: var(--bordeaux); border-color: var(--bordeaux); color: white; }
 
-    /* ── FORM ── */
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:14px; }
-    .form-row.single { grid-template-columns:1fr; }
-    .field { display:flex; flex-direction:column; gap:7px; }
-    label { font-size:0.58rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--brown); }
-    input, select, textarea { font-family:'Josefin Sans',sans-serif; font-size:0.78rem; padding:11px 14px; background:rgba(242,232,217,0.85); border:1px solid rgba(139,26,42,.2); color:var(--text); outline:none; transition:border-color 0.2s, box-shadow 0.2s; width:100%; appearance:none; -webkit-appearance:none; }
-    input:focus, select:focus, textarea:focus { border-color:var(--red); box-shadow:0 0 0 3px rgba(139,26,42,.06); }
-    textarea { resize:vertical; min-height:68px; line-height:1.6; }
+    .slot-section-label { font-size: 0.54rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-mid); opacity: 0.65; margin: 16px 0 8px; }
+    .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .s-btn { padding: 11px 4px; border: 1px solid rgba(91,30,36,0.2); background: white; text-align: center; cursor: pointer; font-size: 0.78rem; color: var(--text-mid); transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .s-btn:hover { border-color: var(--bordeaux); color: var(--bordeaux); }
+    .s-btn.active { background: var(--bordeaux); border-color: var(--bordeaux); color: white; }
 
-    /* ── SUMMARY ── */
-    .summary { background:var(--red); padding:20px 24px; margin-bottom:18px; display:none; }
-    .summary.show { display:block; }
-    .summary-title { font-size:0.56rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:rgba(255,220,180,.8); margin-bottom:12px; }
-    .summary-row { display:flex; justify-content:space-between; align-items:baseline; padding:5px 0; border-bottom:1px solid rgba(255,255,255,.1); }
-    .summary-row:last-child { border-bottom:none; }
-    .summary-key { font-size:0.6rem; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,.6); }
-    .summary-val { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:#fff; }
+    .btn-p { background: var(--bordeaux); color: var(--panna); padding: 17px 44px; width: 100%; font-size: 0.6rem; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; border: none; cursor: pointer; transition: all 0.3s ease; font-family: 'DM Sans', sans-serif; display: block; text-align: center; }
+    .btn-p:hover { background: var(--bordeaux-light); box-shadow: 0 12px 32px rgba(91,30,36,0.35); }
+    .btn-s { background: transparent; color: var(--text-mid); padding: 17px 44px; width: 100%; font-size: 0.6rem; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; border: 1px solid rgba(91,30,36,0.2); cursor: pointer; transition: all 0.3s ease; font-family: 'DM Sans', sans-serif; display: block; text-align: center; margin-top: 12px; }
+    .btn-s:hover { border-color: var(--bordeaux); color: var(--bordeaux); }
 
-    /* ── CTA ── */
-    .cta-btn { display:block; width:100%; background:var(--red); color:#fff; font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; padding:16px 48px; border:none; cursor:pointer; transition:all 0.22s ease; margin-top:8px; }
-    .cta-btn:hover:not(:disabled) { background:var(--red-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(139,26,42,.28); }
-    .cta-btn:disabled { opacity:.35; cursor:not-allowed; transform:none; box-shadow:none; }
+    .summary-box { background: rgba(91,30,36,0.04); border: 1px solid rgba(91,30,36,0.1); padding: 24px; margin-bottom: 28px; }
+    .summary-box h4 { font-size: 0.52rem; letter-spacing: 3px; text-transform: uppercase; color: var(--bordeaux); margin-bottom: 16px; font-weight: 500; }
+    .sum-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(91,30,36,0.07); font-size: 0.82rem; }
+    .sum-row:last-child { border-bottom: none; }
+    .sum-row span { color: var(--text-mid); } .sum-row strong { color: var(--nero); font-weight: 500; }
 
-    /* ── CONFIRMATION ── */
-    .confirmation { display:none; text-align:center; padding:60px 20px; animation:fadeUp 0.5s ease forwards; }
-    .confirmation.show { display:block; }
-    .conf-icon { font-size:3rem; margin-bottom:18px; }
-    .confirmation h2 { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--text); margin-bottom:10px; }
-    .confirmation h2 em { font-style:italic; color:var(--red); }
-    .confirmation p { font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-style:italic; color:var(--brown); line-height:1.8; }
-    .conf-detail { display:inline-block; margin:22px auto 0; background:rgba(255,252,245,.8); border:1px solid rgba(139,26,42,.12); padding:20px 32px; text-align:left; }
-    .conf-row { display:flex; justify-content:space-between; gap:32px; padding:7px 0; border-bottom:1px solid rgba(139,26,42,.07); }
-    .conf-row:last-child { border-bottom:none; }
-    .conf-key { font-size:0.58rem; letter-spacing:2px; text-transform:uppercase; color:var(--brown); opacity:.6; }
-    .conf-val { font-size:0.75rem; font-weight:600; letter-spacing:1px; color:var(--text); }
-    .back-link { display:inline-block; margin-top:28px; font-size:0.6rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--red); text-decoration:none; border-bottom:1px solid rgba(139,26,42,.28); padding-bottom:2px; }
+    .check-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+    .check-row input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--bordeaux); flex-shrink: 0; cursor: pointer; }
+    .check-row label { font-size: 0.74rem; color: var(--text-mid); line-height: 1.5; cursor: pointer; }
+    .check-row a { color: var(--bordeaux); text-decoration: underline; }
 
-    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+    .confirm-wrap { display: none; text-align: center; padding: 40px 20px; }
+    .confirm-wrap.show { display: block; }
+    .confirm-icon { width: 80px; height: 80px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; font-size: 2.2rem; }
+    .confirm-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 400; color: var(--nero); margin-bottom: 12px; }
+    .confirm-title em { font-style: italic; color: var(--bordeaux); }
+    .confirm-ref { background: var(--nero); color: var(--beige); padding: 18px 28px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; letter-spacing: 4px; display: inline-block; margin: 24px 0; }
+    .confirm-details { background: rgba(91,30,36,0.04); border: 1px solid rgba(91,30,36,0.1); padding: 24px; text-align: left; margin: 28px 0; }
+    .confirm-details h4 { font-size: 0.52rem; letter-spacing: 3px; text-transform: uppercase; color: var(--bordeaux); margin-bottom: 16px; }
+    .cd-row { display: flex; gap: 12px; margin-bottom: 10px; font-size: 0.82rem; }
+    .cd-row span { color: var(--text-mid); min-width: 80px; } .cd-row strong { color: var(--nero); }
 
-    @media (max-width:580px) {
-      .desktop-nav { display:none; } .ham { display:flex; } .mob-nav { display:block; }
-      .form-row { grid-template-columns:1fr; }
-      .card { padding:20px 16px 24px; }
-      .tables-grid { grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); }
-    }
+    .wa { position: fixed; bottom: 28px; right: 28px; z-index: 500; width: 54px; height: 54px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.2s ease; }
+    .wa:hover { transform: scale(1.1); }
+    .wa svg { width: 26px; height: 26px; fill: white; }
+    .date-hint { font-size: 0.7rem; color: var(--text-mid); opacity: 0.65; margin-top: 6px; font-style: italic; }
+    .closed-msg { color: var(--bordeaux); font-size: 0.82rem; padding: 12px 0; }
+    .no-date-msg { color: var(--text-mid); font-size: 0.78rem; padding: 12px 0; font-style: italic; }
   </style>
 </head>
 <body>
 
-<header>
-  <a class="logo" href="index.html">
-    <svg width="42" height="46" viewBox="0 0 48 52" xmlns="http://www.w3.org/2000/svg">
-      <g fill="#B8941A"><polygon points="2,22 6,8 10,22"/><polygon points="10,22 14,6 18,22"/><polygon points="18,22 24,3 30,22"/><polygon points="30,22 34,6 38,22"/><polygon points="38,22 42,8 46,22"/><rect x="2" y="20" width="44" height="5" rx="1"/><circle cx="6" cy="8" r="2.2"/><circle cx="14" cy="6" r="2.2"/><circle cx="24" cy="3" r="2.4"/><circle cx="34" cy="6" r="2.2"/><circle cx="42" cy="8" r="2.2"/></g>
-      <path d="M4,26 Q24,24 44,26 L26,51 Q24,53 22,51 Z" fill="#8B1A2A"/>
-      <path d="M4,26 Q24,21 44,26 Q24,32 4,26 Z" fill="#A52030"/>
-      <path d="M8,28 Q24,25 40,28 L25,49 Q24,50 23,49 Z" fill="#F5EDD8"/>
-      <circle cx="24" cy="36" r="6.5" fill="#7A1020"/><circle cx="24" cy="36" r="3" fill="#8B1A2A"/>
-      <circle cx="22" cy="34" r="1.2" fill="rgba(255,255,255,0.55)"/>
-      <circle cx="14" cy="31" r="1.3" fill="#8B1A2A" opacity="0.7"/><circle cx="34" cy="30" r="1.3" fill="#8B1A2A" opacity="0.7"/>
-      <ellipse cx="24" cy="49" rx="1.8" ry="1.2" fill="#F5EDD8" opacity="0.7"/>
-    </svg>
-  </a>
-  <nav class="desktop-nav">
-    <ul>
-      <li><a href="menu.html">Menu</a></li>
-      <li><a href="#">Chi Siamo</a></li>
-      <li><a href="#">Contatti</a></li>
-    </ul>
-  </nav>
-  <div class="ham" id="ham"><span></span><span></span><span></span></div>
-</header>
-
+<nav>
+  <a href="index.html" class="nav-logo">La Reginella <small>Pizzeria Napoletana · Dal 1978</small></a>
+  <ul class="nav-links">
+    <li><a href="index.html#chi-siamo">Chi Siamo</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="index.html#galleria">Galleria</a></li>
+    <li><a href="contatti.html">Contatti</a></li>
+    <li><a href="prenota.html" class="nav-cta">Prenota</a></li>
+  </ul>
+  <button class="ham" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
 <div class="mob-nav" id="mobNav">
   <ul>
-    <li><a href="menu.html">Menu</a></li>
-    <li><a href="#">Chi Siamo</a></li>
-    <li><a href="#">Contatti</a></li>
+    <li><a href="index.html#chi-siamo" onclick="closeMob()">Chi Siamo</a></li>
+    <li><a href="menu.html" onclick="closeMob()">Menu</a></li>
+    <li><a href="index.html#galleria" onclick="closeMob()">Galleria</a></li>
+    <li><a href="contatti.html" onclick="closeMob()">Contatti</a></li>
   </ul>
 </div>
 
 <div class="page-wrap">
-  <div class="page-hero">
-    <p class="eyebrow"><span class="rule"></span>Le Reginelle<span class="rule"></span></p>
-    <h1>Prenota un <em>Tavolo</em></h1>
-    <p>Scegli data, orario e tavolo. Ti confermiano subito.</p>
+  <!-- LEFT -->
+  <div class="left-panel">
+    <div class="left-bg"></div>
+    <div class="left-overlay"></div>
+    <div class="left-content">
+      <p class="lp-label">La Reginella · Napoli</p>
+      <h2 class="lp-title">Riserva il tuo<br><em>tavolo</em></h2>
+      <div class="lp-info">
+        <div class="lp-info-row"><span>📍</span><span>Via dei Tribunali 23, Napoli (NA)</span></div>
+        <div class="lp-info-row"><span>📞</span><span>+39 081 234 5678</span></div>
+        <div class="lp-info-row"><span>✉️</span><span>info@lareginella.it</span></div>
+      </div>
+      <div class="lp-hours">
+        <strong>Orari di Apertura</strong>
+        <p>
+          Lunedì — Chiuso<br>
+          Mar–Ven — 12:00–15:00 / 19:00–23:00<br>
+          Sabato — 12:00–15:00 / 19:00–23:30<br>
+          Domenica — 12:00–16:00
+        </p>
+      </div>
+    </div>
   </div>
 
-  <div class="steps" id="stepsBar">
-    <div class="step active" id="s1"><div class="step-dot">1</div><div class="step-label">Data & Ora</div></div>
-    <div class="step-line"></div>
-    <div class="step" id="s2"><div class="step-dot">2</div><div class="step-label">Tavolo</div></div>
-    <div class="step-line"></div>
-    <div class="step" id="s3"><div class="step-dot">3</div><div class="step-label">Ospiti & Dati</div></div>
-  </div>
+  <!-- RIGHT -->
+  <div class="right-panel">
+    <div id="mainForm">
+      <h1 class="form-title">Prenota il tuo <em>tavolo</em></h1>
+      <p class="form-sub">Compila il modulo qui sotto. Riceverai conferma via email entro pochi minuti.</p>
 
-  <div id="bookingForm">
-
-    <!-- STEP 1: DATA + SERVIZIO + ORARIO -->
-    <div class="card">
-      <div class="card-title">Data</div>
-      <div class="date-quick" id="dateChips"></div>
-      <div style="margin-top:22px">
-        <div class="card-title">Servizio</div>
-        <div class="service-toggle">
-          <button class="service-btn active" id="btnPranzo" onclick="selectService('pranzo')">
-            <span class="svc-icon">☀️</span>Pranzo
-            <span style="font-size:0.48rem;opacity:.7;letter-spacing:1px">12:00 – 14:30</span>
-          </button>
-          <button class="service-btn" id="btnCena" onclick="selectService('cena')">
-            <span class="svc-icon">🌙</span>Cena
-            <span style="font-size:0.48rem;opacity:.7;letter-spacing:1px">18:00 – 23:00</span>
-          </button>
-        </div>
+      <div class="steps">
+        <div class="step-ind active" id="si1"><span class="circle">1</span> Data &amp; Ora</div>
+        <div class="step-ind" id="si2"><span class="circle">2</span> I tuoi dati</div>
+        <div class="step-ind" id="si3"><span class="circle">3</span> Conferma</div>
       </div>
-      <div style="margin-top:22px">
-        <div class="card-title">Orario</div>
-        <div class="slots-grid" id="slotsGrid"></div>
-        <div class="slots-legend">
-          <div class="leg-item"><div class="leg-dot" style="background:#2A6015"></div>Disponibile</div>
-          <div class="leg-item"><div class="leg-dot" style="background:#B8721A"></div>Pochi tavoli</div>
-          <div class="leg-item"><div class="leg-dot" style="background:#9A8878"></div>Completo</div>
+
+      <!-- STEP 1 -->
+      <div class="form-step active" id="step1">
+        <div class="field" id="f-date">
+          <label for="bookDate">Data della prenotazione *</label>
+          <input type="date" id="bookDate">
+          <p class="date-hint">Il ristorante è chiuso il lunedì.</p>
+          <p class="field-err">Seleziona una data valida</p>
         </div>
+
+        <div class="field" id="f-persons">
+          <label>Numero di persone *</label>
+          <div class="persons-grid" style="margin-top:8px;">
+            <button type="button" class="p-btn" data-n="1">1</button>
+            <button type="button" class="p-btn" data-n="2">2</button>
+            <button type="button" class="p-btn" data-n="3">3</button>
+            <button type="button" class="p-btn" data-n="4">4</button>
+            <button type="button" class="p-btn" data-n="5">5</button>
+            <button type="button" class="p-btn" data-n="6">6</button>
+            <button type="button" class="p-btn" data-n="7">7</button>
+            <button type="button" class="p-btn" data-n="8">8</button>
+            <button type="button" class="p-btn" data-n="9">9</button>
+            <button type="button" class="p-btn" data-n="10+">10+</button>
+          </div>
+          <p class="field-err">Seleziona il numero di persone</p>
+        </div>
+
+        <div class="field" id="f-slot">
+          <label>Orario *</label>
+          <div id="slotsWrap" style="margin-top:8px;">
+            <p class="no-date-msg">Seleziona prima una data per vedere gli orari disponibili.</p>
+          </div>
+          <p class="field-err">Seleziona un orario</p>
+        </div>
+
+        <div class="field">
+          <label for="zone">Preferenza posto</label>
+          <select id="zone">
+            <option value="">Nessuna preferenza</option>
+            <option value="interno">Sala principale</option>
+            <option value="esterno">Terrazza esterna</option>
+            <option value="privata">Saletta privata</option>
+            <option value="forno">Vicino al forno</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn-p" onclick="toStep2()">Continua →</button>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="form-step" id="step2">
+        <div class="field-row">
+          <div class="field" id="f-nome">
+            <label for="nome">Nome *</label>
+            <input type="text" id="nome" placeholder="Mario">
+            <p class="field-err">Campo obbligatorio</p>
+          </div>
+          <div class="field" id="f-cognome">
+            <label for="cognome">Cognome *</label>
+            <input type="text" id="cognome" placeholder="Esposito">
+            <p class="field-err">Campo obbligatorio</p>
+          </div>
+        </div>
+        <div class="field" id="f-email">
+          <label for="email">Email *</label>
+          <input type="email" id="email" placeholder="mario@email.it">
+          <p class="field-err">Inserisci un'email valida</p>
+        </div>
+        <div class="field" id="f-tel">
+          <label for="tel">Telefono *</label>
+          <input type="tel" id="tel" placeholder="+39 333 123 4567">
+          <p class="field-err">Campo obbligatorio</p>
+        </div>
+        <div class="field">
+          <label for="note">Richieste speciali / Allergie &amp; Intolleranze</label>
+          <textarea id="note" placeholder="Es: allergia ai crostacei, tavolo per compleanno, seggiolone per bambino, menu senza glutine..."></textarea>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="privacy">
+          <label for="privacy">Ho letto e accetto la <a href="#">Privacy Policy</a>. Autorizzo il trattamento dei miei dati personali per la gestione della prenotazione. *</label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="newsletter">
+          <label for="newsletter">Desidero ricevere aggiornamenti su eventi speciali e menu stagionali (opzionale).</label>
+        </div>
+        <button type="button" class="btn-p" onclick="toStep3()">Rivedi e Conferma →</button>
+        <button type="button" class="btn-s" onclick="toStep1()">← Modifica data/ora</button>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="form-step" id="step3">
+        <div class="summary-box" id="summaryBox"></div>
+        <div class="field">
+          <label for="cmethod">Come vuoi ricevere la conferma?</label>
+          <select id="cmethod">
+            <option value="email">Via Email</option>
+            <option value="sms">Via SMS</option>
+            <option value="whatsapp">Via WhatsApp</option>
+          </select>
+        </div>
+        <p style="font-size:0.72rem;color:var(--text-mid);margin:-8px 0 24px;line-height:1.6;font-style:italic;">La prenotazione verrà confermata entro 30 minuti. Il tavolo verrà tenuto per 15 minuti dall'orario prenotato.</p>
+        <button type="button" class="btn-p" onclick="confirmBooking()">✓ Conferma Prenotazione</button>
+        <button type="button" class="btn-s" onclick="toStep2()">← Modifica i tuoi dati</button>
       </div>
     </div>
 
-    <!-- STEP 2: TAVOLI -->
-    <div class="card" id="tablesCard" style="display:none">
-      <div class="card-title">Scegli il tavolo</div>
-      <div class="tables-grid" id="tablesGrid"></div>
-      <!-- Short-stay alert -->
-      <div class="short-alert" id="shortAlert">
-        <div class="short-alert-title">⚠️ Attenzione — tempo limitato</div>
-        <p id="shortAlertText"></p>
-        <div class="short-alert-btns">
-          <button class="alert-btn alert-btn-confirm" onclick="confirmShortStay()">Procedi comunque</button>
-          <button class="alert-btn alert-btn-other" onclick="chooseOtherTable()">Scegli altro tavolo</button>
-        </div>
-      </div>
+    <!-- CONFIRMATION -->
+    <div class="confirm-wrap" id="confirmScreen">
+      <div class="confirm-icon">✓</div>
+      <h2 class="confirm-title">Prenotazione <em>Confermata</em>!</h2>
+      <p>Grazie! La tua prenotazione è stata ricevuta. Ti invieremo conferma all'indirizzo email fornito.</p>
+      <div class="confirm-ref" id="confirmRef">LREG-000000</div>
+      <div class="confirm-details" id="confirmDetails"></div>
+      <p style="font-size:0.78rem;color:var(--text-mid);margin-bottom:32px;">Per modifiche o cancellazioni contattaci entro 24h al <strong>+39 081 234 5678</strong> o via WhatsApp citando il codice di prenotazione.</p>
+      <a href="menu.html" class="btn-p" style="display:inline-block;width:auto;padding:17px 44px;">Esplora il Menu →</a>
     </div>
-
-    <!-- STEP 3: OSPITI + DATI -->
-    <div class="card" id="detailsCard" style="display:none">
-      <div class="card-title">Numero ospiti</div>
-      <div class="guests-row">
-        <button class="guests-btn" onclick="changeGuests(-1)">−</button>
-        <div><div class="guests-count" id="guestCount">2</div><div class="guests-label">Persone</div></div>
-        <button class="guests-btn" onclick="changeGuests(+1)">+</button>
-      </div>
-      <p class="guests-warn" id="guestsWarn"></p>
-
-      <div style="margin-top:24px">
-        <div class="card-title">I tuoi dati</div>
-        <div class="form-row">
-          <div class="field"><label>Nome</label><input type="text" id="fname" placeholder="Mario" autocomplete="given-name"></div>
-          <div class="field"><label>Cognome</label><input type="text" id="lname" placeholder="Rossi" autocomplete="family-name"></div>
-        </div>
-        <div class="form-row">
-          <div class="field"><label>Telefono</label><input type="tel" id="phone" placeholder="+39 333 123 4567" autocomplete="tel"></div>
-          <div class="field"><label>Email</label><input type="email" id="email" placeholder="mario@email.it" autocomplete="email"></div>
-        </div>
-        <div class="form-row single">
-          <div class="field"><label>Note (allergie, occasioni…)</label><textarea id="notes" placeholder="Es: celiaco, compleanno, seggiolone…"></textarea></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SUMMARY -->
-    <div class="summary" id="summary">
-      <div class="summary-title">Riepilogo</div>
-      <div class="summary-row"><span class="summary-key">Data</span><span class="summary-val" id="s-date">—</span></div>
-      <div class="summary-row"><span class="summary-key">Orario</span><span class="summary-val" id="s-time">—</span></div>
-      <div class="summary-row"><span class="summary-key">Tavolo</span><span class="summary-val" id="s-table">—</span></div>
-      <div class="summary-row"><span class="summary-key">Ospiti</span><span class="summary-val" id="s-guests">—</span></div>
-    </div>
-
-    <button class="cta-btn" id="ctaBtn" onclick="submitBooking()" disabled>Conferma Prenotazione</button>
-  </div>
-
-  <!-- CONFIRMATION -->
-  <div class="confirmation" id="confirmation">
-    <div class="conf-icon">🎉</div>
-    <h2>Prenotazione <em>Confermata!</em></h2>
-    <p>Ti aspettiamo da Le Reginelle.<br>Riceverai un SMS di conferma al numero indicato.</p>
-    <div class="conf-detail">
-      <div class="conf-row"><span class="conf-key">Ristorante</span><span class="conf-val">Le Reginelle, Napoli</span></div>
-      <div class="conf-row"><span class="conf-key">Data</span><span class="conf-val" id="c-date">—</span></div>
-      <div class="conf-row"><span class="conf-key">Orario</span><span class="conf-val" id="c-time">—</span></div>
-      <div class="conf-row"><span class="conf-key">Tavolo</span><span class="conf-val" id="c-table">—</span></div>
-      <div class="conf-row"><span class="conf-key">Ospiti</span><span class="conf-val" id="c-guests">—</span></div>
-      <div class="conf-row"><span class="conf-key">Nome</span><span class="conf-val" id="c-name">—</span></div>
-    </div>
-    <a href="index.html" class="back-link">← Torna alla Home</a>
   </div>
 </div>
 
+<a href="https://wa.me/390812345678" class="wa" aria-label="WhatsApp" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
 <script>
-/* ═══════════════════════════════════════
-   MOBILE NAV
-═══════════════════════════════════════ */
-document.getElementById('ham').addEventListener('click', function(){
-  this.classList.toggle('active');
-  document.getElementById('mobNav').classList.toggle('open');
-});
+  const S = { date:'', persons:0, slot:'', zone:'', nome:'', cognome:'', email:'', tel:'', note:'' };
 
-/* ═══════════════════════════════════════
-   CONSTANTS
-═══════════════════════════════════════ */
-const DINING_MIN = 90; // minutes per dining session
+  // Mobile nav
+  const ham = document.getElementById('ham'), mobNav = document.getElementById('mobNav');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); mobNav.classList.toggle('open'); document.body.style.overflow = ham.classList.contains('open')?'hidden':''; });
+  function closeMob() { ham.classList.remove('open'); mobNav.classList.remove('open'); document.body.style.overflow = ''; }
 
-// All tables in the restaurant
-const TABLES = [
-  {id:1,  seats:2,  label:'Tavolo 1'},
-  {id:2,  seats:2,  label:'Tavolo 2'},
-  {id:3,  seats:4,  label:'Tavolo 3'},
-  {id:4,  seats:4,  label:'Tavolo 4'},
-  {id:5,  seats:4,  label:'Tavolo 5'},
-  {id:6,  seats:6,  label:'Tavolo 6'},
-  {id:7,  seats:6,  label:'Tavolo 7'},
-  {id:8,  seats:2,  label:'Tavolo 8'},
-  {id:9,  seats:4,  label:'Tavolo 9'},
-  {id:10, seats:8,  label:'Tavolo 10'},
-];
+  // Date
+  const di = document.getElementById('bookDate');
+  const tm = new Date(); tm.setDate(tm.getDate()+1);
+  di.min = tm.toISOString().split('T')[0];
+  di.addEventListener('change', () => { S.date = di.value; S.slot = ''; renderSlots(); });
 
-const PRANZO_SLOTS = ['12:00','12:30','13:00','13:30','14:00','14:30'];
-const CENA_SLOTS   = ['18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00','22:30','23:00'];
-const DAYS_IT   = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
-const MONTHS_IT = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+  const LUNCH = ['12:00','12:30','13:00','13:30','14:00','14:30'];
+  const DINNER = ['19:00','19:30','20:00','20:30','21:00','21:30','22:00'];
+  const DINNER_SAT = [...DINNER,'22:30','23:00'];
+  const SUN_LUNCH = ['12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30'];
 
-/* ═══════════════════════════════════════
-   STATE
-═══════════════════════════════════════ */
-let selectedDate    = null;
-let selectedService = 'pranzo';
-let selectedTime    = null;
-let selectedTable   = null;
-let shortStayPending = null; // table obj pending short-stay confirmation
-let guests          = 2;
+  function getSlots(ds) {
+    if (!ds) return null;
+    const d = new Date(ds+'T12:00:00'), day = d.getDay();
+    if (day===1) return 'closed';
+    if (day===0) return {lunch:SUN_LUNCH,dinner:[]};
+    if (day===6) return {lunch:LUNCH,dinner:DINNER_SAT};
+    return {lunch:LUNCH,dinner:DINNER};
+  }
 
-/* ═══════════════════════════════════════
-   SEEDED RNG — deterministic fake bookings
-═══════════════════════════════════════ */
-function lcg(s){ return ((Math.imul(1664525,s)+1013904223)>>>0)/4294967296; }
-function strHash(s){ let n=0; for(let i=0;i<s.length;i++) n=(n*31+s.charCodeAt(i))&0xFFFFFF; return n; }
-
-/**
- * Get existing bookings for a table on a given date.
- * Returns array of start-time strings (e.g. ['13:00','20:30'])
- */
-function getTableBookings(date, tableId) {
-  const seed = strHash(date + '_t' + tableId);
-  const bookings = [];
-  const slots = [...PRANZO_SLOTS, ...CENA_SLOTS];
-
-  slots.forEach((slot, idx) => {
-    // ~30% chance a table already has a booking at this slot
-    const r = lcg(seed + idx * 97);
-    if (r < 0.30) bookings.push(slot);
-  });
-  return bookings;
-}
-
-/* ═══════════════════════════════════════
-   TIME UTILS
-═══════════════════════════════════════ */
-function toMin(t){ const [h,m]=t.split(':').map(Number); return h*60+m; }
-function minToTime(m){ return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); }
-
-/**
- * For a given date + table + desired start time, return:
- *   { status: 'free' | 'short' | 'occupied', minutesAvailable?, nextBooking? }
- */
-function getTableStatus(date, tableId, startTime) {
-  const start = toMin(startTime);
-  const bookings = getTableBookings(date, tableId);
-
-  for (const b of bookings) {
-    const bMin = toMin(b);
-    const bEnd = bMin + DINING_MIN;
-
-    // This booking overlaps our desired start → OCCUPIED
-    if (start >= bMin && start < bEnd) {
-      return { status:'occupied' };
+  function renderSlots() {
+    const wrap = document.getElementById('slotsWrap');
+    const slots = getSlots(S.date);
+    if (!slots) { wrap.innerHTML='<p class="no-date-msg">Seleziona prima una data.</p>'; return; }
+    if (slots==='closed') { wrap.innerHTML='<p class="closed-msg">⚠ Il ristorante è chiuso il lunedì. Scegli un altro giorno.</p>'; return; }
+    let h = '';
+    if (slots.lunch.length) {
+      h += '<p class="slot-section-label">🌞 Pranzo</p><div class="slots-grid">';
+      slots.lunch.forEach(t => h += `<button type="button" class="s-btn${S.slot===t?' active':''}" onclick="pickSlot('${t}')">${t}</button>`);
+      h += '</div>';
     }
-
-    // There's a booking that starts within DINING_MIN after our slot → SHORT STAY
-    if (start < bMin && bMin - start < DINING_MIN) {
-      return {
-        status: 'short',
-        minutesAvailable: bMin - start,
-        nextBooking: b,
-      };
+    if (slots.dinner.length) {
+      h += '<p class="slot-section-label">🌙 Cena</p><div class="slots-grid">';
+      slots.dinner.forEach(t => h += `<button type="button" class="s-btn${S.slot===t?' active':''}" onclick="pickSlot('${t}')">${t}</button>`);
+      h += '</div>';
     }
+    wrap.innerHTML = h;
   }
-  return { status:'free' };
-}
+  function pickSlot(t) { S.slot = t; renderSlots(); }
 
-/**
- * Slot-level availability: count free/short/occupied tables at this time
- */
-function getSlotAvailability(date, timeStr) {
-  let free=0, short_=0, occupied=0;
-  TABLES.forEach(t => {
-    const s = getTableStatus(date, t.id, timeStr);
-    if      (s.status==='free')     free++;
-    else if (s.status==='short')    short_++;
-    else                            occupied++;
-  });
-  const available = free + short_;
-  if (available === 0)   return 'full';
-  if (available <= 2)    return 'few';
-  return 'avail';
-}
+  document.querySelectorAll('.p-btn').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.p-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active'); S.persons = b.dataset.n;
+  }));
 
-/* ═══════════════════════════════════════
-   UI — DATES
-═══════════════════════════════════════ */
-function buildDates(){
-  const wrap = document.getElementById('dateChips');
-  const today = new Date(); today.setHours(0,0,0,0);
-  for(let i=0;i<8;i++){
-    const d = new Date(today); d.setDate(today.getDate()+i);
-    const chip = document.createElement('button');
-    chip.className = 'date-chip'+(i===0?' active':'');
-    chip.innerHTML = `<span style="display:block;font-size:0.65rem">${DAYS_IT[d.getDay()]}</span>
-                      <span style="display:block;font-size:0.88rem;font-weight:700;margin:1px 0">${d.getDate()}</span>
-                      <span style="display:block;font-size:0.52rem;opacity:.7">${MONTHS_IT[d.getMonth()]}</span>`;
-    chip.dataset.date = d.toISOString().split('T')[0];
-    chip.addEventListener('click',()=>selectDate(chip));
-    wrap.appendChild(chip);
-  }
-  selectedDate = today.toISOString().split('T')[0];
-  buildSlots();
-}
-
-function selectDate(chip){
-  document.querySelectorAll('.date-chip').forEach(c=>c.classList.remove('active'));
-  chip.classList.add('active');
-  selectedDate = chip.dataset.date;
-  resetFromSlot();
-  buildSlots();
-}
-
-/* ═══════════════════════════════════════
-   UI — SERVICE
-═══════════════════════════════════════ */
-function selectService(svc){
-  selectedService = svc;
-  document.getElementById('btnPranzo').classList.toggle('active',svc==='pranzo');
-  document.getElementById('btnCena').classList.toggle('active',svc==='cena');
-  resetFromSlot();
-  buildSlots();
-}
-
-/* ═══════════════════════════════════════
-   UI — SLOTS
-═══════════════════════════════════════ */
-function buildSlots(){
-  const grid = document.getElementById('slotsGrid');
-  grid.innerHTML = '';
-  const list = selectedService==='pranzo' ? PRANZO_SLOTS : CENA_SLOTS;
-  const now = new Date();
-  const todayStr = new Date().toISOString().split('T')[0];
-
-  list.forEach(t => {
-    let avail = getSlotAvailability(selectedDate, t);
-
-    // Past slots today → full
-    if(selectedDate===todayStr){
-      const [h,m]=t.split(':').map(Number);
-      const slotD=new Date(); slotD.setHours(h,m,0,0);
-      if(slotD<=now) avail='full';
-    }
-
-    const btn = document.createElement('button');
-    btn.className = `slot ${avail}`;
-    btn.dataset.time = t;
-    const label = avail==='full'?'Completo': avail==='few'?'Pochi tavoli':'Disponibile';
-    btn.innerHTML = `<div class="slot-dot"></div><div class="slot-time">${t}</div><div class="slot-info">${label}</div>`;
-    if(avail!=='full') btn.addEventListener('click',()=>selectSlot(btn,t));
-    grid.appendChild(btn);
-  });
-}
-
-function selectSlot(btn, time){
-  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
-  btn.classList.add('selected');
-  selectedTime = time;
-  selectedTable = null;
-  shortStayPending = null;
-  document.getElementById('shortAlert').classList.remove('show');
-  buildTablesGrid();
-  document.getElementById('tablesCard').style.display='block';
-  document.getElementById('detailsCard').style.display='none';
-  updateSteps();
-  updateSummary();
-  updateCTA();
-  setTimeout(()=>document.getElementById('tablesCard').scrollIntoView({behavior:'smooth',block:'start'}),80);
-}
-
-/* ═══════════════════════════════════════
-   UI — TABLES
-═══════════════════════════════════════ */
-function buildTablesGrid(){
-  const grid = document.getElementById('tablesGrid');
-  grid.innerHTML = '';
-
-  TABLES.forEach(table => {
-    const info = getTableStatus(selectedDate, table.id, selectedTime);
-    const btn = document.createElement('button');
-    btn.className = `table-btn ${info.status}`;
-    btn.dataset.tableId = table.id;
-
-    let statusLabel = '';
-    if      (info.status==='free')     statusLabel='Libero';
-    else if (info.status==='occupied') statusLabel='Occupato';
-    else if (info.status==='short')    statusLabel=`~${info.minutesAvailable} min`;
-
-    btn.innerHTML = `<div class="table-dot"></div>
-                     <div class="table-num">${table.id}</div>
-                     <div class="table-seats">${table.seats} posti</div>
-                     <div class="table-status">${statusLabel}</div>`;
-
-    if(info.status !== 'occupied'){
-      btn.addEventListener('click', ()=>selectTable(btn, table, info));
-    }
-    grid.appendChild(btn);
-  });
-}
-
-function selectTable(btn, table, info){
-  // Clear previous selection
-  document.querySelectorAll('.table-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('shortAlert').classList.remove('show');
-  shortStayPending = null;
-
-  if(info.status === 'short'){
-    // Don't select yet — show warning first
-    btn.classList.add('selected');
-    shortStayPending = { btn, table, info };
-    const alertText = document.getElementById('shortAlertText');
-    alertText.textContent = `Il Tavolo ${table.id} è già prenotato alle ${info.nextBooking}. Avresti solo ${info.minutesAvailable} minuti per cenare. Vuoi procedere o preferisci un altro tavolo?`;
-    document.getElementById('shortAlert').classList.add('show');
-    selectedTable = null;
-    updateCTA();
-    return;
-  }
-
-  // Free table — select directly
-  btn.classList.add('selected');
-  selectedTable = table;
-  revealDetails(table);
-}
-
-function confirmShortStay(){
-  if(!shortStayPending) return;
-  selectedTable = shortStayPending.table;
-  document.getElementById('shortAlert').classList.remove('show');
-  shortStayPending = null;
-  revealDetails(selectedTable);
-}
-
-function chooseOtherTable(){
-  // Deselect current and close alert
-  document.querySelectorAll('.table-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('shortAlert').classList.remove('show');
-  shortStayPending = null;
-  selectedTable = null;
-  updateCTA();
-  updateSummary();
-}
-
-function revealDetails(table){
-  // Show guest warning if table capacity < guests
-  checkGuestsCapacity(table);
-  document.getElementById('detailsCard').style.display='block';
-  updateSteps();
-  updateSummary();
-  updateCTA();
-  setTimeout(()=>document.getElementById('detailsCard').scrollIntoView({behavior:'smooth',block:'start'}),80);
-}
-
-/* ═══════════════════════════════════════
-   GUESTS
-═══════════════════════════════════════ */
-function changeGuests(delta){
-  guests = Math.min(12, Math.max(1, guests+delta));
-  document.getElementById('guestCount').textContent = guests;
-  if(selectedTable) checkGuestsCapacity(selectedTable);
-  updateSummary();
-}
-
-function checkGuestsCapacity(table){
-  const warn = document.getElementById('guestsWarn');
-  if(guests > table.seats){
-    warn.textContent = `⚠️ Il Tavolo ${table.id} ha ${table.seats} posti — considera un tavolo più grande.`;
-    warn.classList.add('show');
-  } else {
-    warn.classList.remove('show');
-  }
-}
-
-/* ═══════════════════════════════════════
-   SUMMARY + STEPS + CTA
-═══════════════════════════════════════ */
-function formatDate(str){
-  if(!str) return '—';
-  const d = new Date(str+'T12:00:00');
-  return `${DAYS_IT[d.getDay()]} ${d.getDate()} ${MONTHS_IT[d.getMonth()]}`;
-}
-
-function updateSummary(){
-  const show = selectedDate && selectedTime && selectedTable;
-  document.getElementById('summary').classList.toggle('show', !!show);
-  if(show){
-    document.getElementById('s-date').textContent   = formatDate(selectedDate);
-    document.getElementById('s-time').textContent   = selectedTime;
-    document.getElementById('s-table').textContent  = `Tavolo ${selectedTable.id} (${selectedTable.seats} posti)`;
-    document.getElementById('s-guests').textContent = guests+(guests===1?' persona':' persone');
-  }
-}
-
-function updateSteps(){
-  document.getElementById('s1').className='step '+(selectedTime?'done':'active');
-  document.getElementById('s2').className='step '+(selectedTable?'done':selectedTime?'active':'');
-  document.getElementById('s3').className='step '+(selectedTable?'active':'');
-}
-
-function updateCTA(){
-  document.getElementById('ctaBtn').disabled = !(selectedDate && selectedTime && selectedTable);
-}
-
-function resetFromSlot(){
-  selectedTime=null; selectedTable=null; shortStayPending=null;
-  document.getElementById('tablesCard').style.display='none';
-  document.getElementById('detailsCard').style.display='none';
-  document.getElementById('shortAlert').classList.remove('show');
-  document.getElementById('summary').classList.remove('show');
-  document.getElementById('ctaBtn').disabled=true;
-  updateSteps();
-}
-
-/* ═══════════════════════════════════════
-   SUBMIT
-═══════════════════════════════════════ */
-function submitBooking(){
-  const fname=document.getElementById('fname').value.trim();
-  const lname=document.getElementById('lname').value.trim();
-  const phone=document.getElementById('phone').value.trim();
-  if(!fname||!lname||!phone){
-    ['fname','lname','phone'].forEach(id=>{
-      const el=document.getElementById(id);
-      el.style.borderColor=el.value.trim()?'':'var(--red)';
+  function setStep(n) {
+    [1,2,3].forEach(i => {
+      document.getElementById('step'+i).classList.toggle('active', i===n);
+      const el = document.getElementById('si'+i);
+      el.classList.remove('active','done');
+      if (i===n) el.classList.add('active');
+      else if (i<n) el.classList.add('done');
     });
-    document.getElementById('detailsCard').scrollIntoView({behavior:'smooth',block:'start'});
-    return;
+    document.querySelector('.right-panel').scrollIntoView({behavior:'smooth',block:'start'});
   }
-  document.getElementById('c-date').textContent   = formatDate(selectedDate);
-  document.getElementById('c-time').textContent   = selectedTime;
-  document.getElementById('c-table').textContent  = `Tavolo ${selectedTable.id} (${selectedTable.seats} posti)`;
-  document.getElementById('c-guests').textContent = guests+(guests===1?' persona':' persone');
-  document.getElementById('c-name').textContent   = fname+' '+lname;
 
-  document.getElementById('bookingForm').style.display='none';
-  document.getElementById('stepsBar').style.display='none';
-  document.getElementById('confirmation').classList.add('show');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+  function toStep1() { setStep(1); }
+  function toStep2() {
+    let ok = true;
+    clearErr('f-date'); clearErr('f-persons'); clearErr('f-slot');
+    if (!S.date || getSlots(S.date)==='closed') { markErr('f-date'); ok=false; }
+    if (!S.persons) { markErr('f-persons'); ok=false; }
+    if (!S.slot) { markErr('f-slot'); ok=false; }
+    if (!ok) return;
+    S.zone = document.getElementById('zone').value;
+    setStep(2);
+  }
+  function toStep3() {
+    let ok = true;
+    ['f-nome','f-cognome','f-email','f-tel'].forEach(id => { clearErr(id); });
+    if (!document.getElementById('nome').value.trim()) { markErr('f-nome'); ok=false; }
+    if (!document.getElementById('cognome').value.trim()) { markErr('f-cognome'); ok=false; }
+    const emailVal = document.getElementById('email').value.trim();
+    if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) { markErr('f-email'); ok=false; }
+    if (!document.getElementById('tel').value.trim()) { markErr('f-tel'); ok=false; }
+    if (!document.getElementById('privacy').checked) { alert('Devi accettare la Privacy Policy per procedere.'); ok=false; }
+    if (!ok) return;
+    S.nome = document.getElementById('nome').value.trim();
+    S.cognome = document.getElementById('cognome').value.trim();
+    S.email = emailVal;
+    S.tel = document.getElementById('tel').value.trim();
+    S.note = document.getElementById('note').value.trim();
+    buildSummary();
+    setStep(3);
+  }
 
-/* ═══════════════════════════════════════
-   INIT
-═══════════════════════════════════════ */
-buildDates();
+  function markErr(id) { document.getElementById(id).classList.add('error'); }
+  function clearErr(id) { document.getElementById(id).classList.remove('error'); }
+
+  function buildSummary() {
+    const d = new Date(S.date+'T12:00:00');
+    const df = d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const zones = {'':'Nessuna preferenza','interno':'Sala principale','esterno':'Terrazza esterna','privata':'Saletta privata','forno':'Vicino al forno'};
+    document.getElementById('summaryBox').innerHTML = `
+      <h4>Riepilogo Prenotazione</h4>
+      <div class="sum-row"><span>Data</span><strong>${df}</strong></div>
+      <div class="sum-row"><span>Orario</span><strong>${S.slot}</strong></div>
+      <div class="sum-row"><span>Persone</span><strong>${S.persons}</strong></div>
+      <div class="sum-row"><span>Posto</span><strong>${zones[S.zone]||S.zone}</strong></div>
+      <div class="sum-row"><span>Nome</span><strong>${S.nome} ${S.cognome}</strong></div>
+      <div class="sum-row"><span>Email</span><strong>${S.email}</strong></div>
+      <div class="sum-row"><span>Tel</span><strong>${S.tel}</strong></div>
+      ${S.note?`<div class="sum-row"><span>Note</span><strong>${S.note}</strong></div>`:''}
+    `;
+  }
+
+  function confirmBooking() {
+    const ref = 'LREG-'+Math.random().toString(36).substr(2,6).toUpperCase();
+    const d = new Date(S.date+'T12:00:00');
+    const df = d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const booking = { id:ref, date:S.date, dateFmt:df, slot:S.slot, persons:S.persons, zone:S.zone, nome:S.nome, cognome:S.cognome, email:S.email, tel:S.tel, note:S.note, status:'pending', createdAt:new Date().toISOString(), method:document.getElementById('cmethod').value };
+    const list = JSON.parse(localStorage.getItem('lareginella_bookings')||'[]');
+    list.push(booking);
+    localStorage.setItem('lareginella_bookings', JSON.stringify(list));
+
+    document.getElementById('confirmRef').textContent = ref;
+    document.getElementById('confirmDetails').innerHTML = `
+      <h4>Dettagli Prenotazione</h4>
+      <div class="cd-row"><span>Codice</span><strong>${ref}</strong></div>
+      <div class="cd-row"><span>Data</span><strong>${df}</strong></div>
+      <div class="cd-row"><span>Orario</span><strong>${S.slot}</strong></div>
+      <div class="cd-row"><span>Persone</span><strong>${S.persons}</strong></div>
+      <div class="cd-row"><span>Nome</span><strong>${S.nome} ${S.cognome}</strong></div>
+      <div class="cd-row"><span>Stato</span><strong style="color:var(--oliva)">✓ In attesa di conferma</strong></div>
+    `;
+    document.getElementById('mainForm').style.display = 'none';
+    document.getElementById('confirmScreen').classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
 </script>
 </body>
 </html>
