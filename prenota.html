@@ -461,67 +461,6 @@
     window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  // Vac e press promo popup
-  (function() {
-    const POPUP_KEY = 'lareginella_vacpress_closed';
-    const popup = document.getElementById('vacPressPopup');
-    const closeBtn = document.getElementById('vacPressClose');
-    const tab = document.getElementById('vacPressTab');
-    function openPopup() { popup.classList.add('vp-open'); tab.style.display = 'none'; }
-    function closePopup() { popup.classList.remove('vp-open'); tab.style.display = 'flex'; sessionStorage.setItem(POPUP_KEY, '1'); }
-    closeBtn.addEventListener('click', closePopup);
-    tab.addEventListener('click', openPopup);
-    if (!sessionStorage.getItem(POPUP_KEY)) setTimeout(openPopup, 2800);
-  })();
 </script>
-
-<!-- Vac e press promo popup -->
-<style>
-  #vacPressTab { position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:1200;background:var(--bordeaux);color:var(--beige);writing-mode:vertical-rl;text-orientation:mixed;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:18px 10px;border-radius:8px 0 0 8px;cursor:pointer;display:none;align-items:center;gap:8px;box-shadow:-3px 0 18px rgba(0,0,0,0.22);transition:background 0.2s; }
-  #vacPressTab:hover { background:var(--bordeaux-dark); }
-  #vacPressTab span.vp-icon { writing-mode:horizontal-tb;font-size:1rem; }
-  #vacPressPopup { position:fixed;right:-340px;top:50%;transform:translateY(-50%);z-index:1200;width:320px;background:var(--panna);border-left:4px solid var(--bordeaux);border-radius:12px 0 0 12px;box-shadow:-6px 0 40px rgba(0,0,0,0.22);padding:28px 24px 24px;transition:right 0.45s cubic-bezier(0.34,1.1,0.64,1); }
-  #vacPressPopup.vp-open { right:0; }
-  .vp-header { display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px; }
-  .vp-badge { display:inline-block;background:var(--bordeaux);color:var(--beige);font-family:'DM Sans',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:8px; }
-  .vp-title { font-family:'Cormorant Garamond',serif;font-size:2rem;font-style:italic;font-weight:600;color:var(--bordeaux);line-height:1.1; }
-  .vp-subtitle { font-family:'DM Sans',sans-serif;font-size:0.78rem;color:var(--text-mid);margin-top:4px; }
-  #vacPressClose { background:none;border:none;cursor:pointer;color:var(--text-mid);font-size:1.2rem;line-height:1;padding:2px 4px;margin-left:8px;flex-shrink:0;transition:color 0.2s; }
-  #vacPressClose:hover { color:var(--bordeaux); }
-  .vp-divider { height:1px;background:var(--beige-light);margin:14px 0; }
-  .vp-items { list-style:none;margin-bottom:16px; }
-  .vp-items li { display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--text);padding:5px 0;border-bottom:1px dashed var(--panna-dark); }
-  .vp-items li:last-child { border-bottom:none; }
-  .vp-items li::before { content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--oliva);flex-shrink:0; }
-  .vp-price-row { display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px; }
-  .vp-price { font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:700;color:var(--bordeaux);line-height:1; }
-  .vp-price sup { font-size:1.1rem;vertical-align:super; }
-  .vp-note { font-size:0.72rem;color:var(--text-mid);text-align:right;max-width:110px;line-height:1.4; }
-  .vp-cta { display:block;width:100%;padding:13px;background:var(--bordeaux);color:var(--beige);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;text-align:center;border-radius:6px;text-decoration:none;transition:background 0.25s; }
-  .vp-cta:hover { background:var(--bordeaux-dark); }
-  .vp-footer { text-align:center;font-size:0.68rem;color:var(--text-mid);margin-top:10px; }
-  @media (max-width:400px) { #vacPressPopup { width:290px;padding:22px 16px 18px; } }
-</style>
-<div id="vacPressTab" aria-label="Promo pranzo Vac e press"><span class="vp-icon">🍽️</span>Promo Pranzo</div>
-<div id="vacPressPopup" role="dialog" aria-modal="true" aria-labelledby="vacPressTitle">
-  <div class="vp-header">
-    <div>
-      <div class="vp-badge">Offerta Lavoratori</div>
-      <div class="vp-title" id="vacPressTitle">Vac e press!</div>
-      <div class="vp-subtitle">Pranzo veloce, qualità vera</div>
-    </div>
-    <button id="vacPressClose" aria-label="Chiudi">&times;</button>
-  </div>
-  <div class="vp-divider"></div>
-  <ul class="vp-items">
-    <li>Primo piatto</li><li>Secondo piatto</li><li>Contorno</li><li>Bibita inclusa</li>
-  </ul>
-  <div class="vp-price-row">
-    <div class="vp-price"><sup>€</sup>15</div>
-    <div class="vp-note">Un tris completo,<br>veloce e di qualità</div>
-  </div>
-  <a href="prenota.html" class="vp-cta">Prenota il tuo pranzo</a>
-  <div class="vp-footer">Solo a pranzo · Tutti i giorni 12:00–14:30</div>
-</div>
 </body>
 </html>

@@ -926,30 +926,6 @@
     });
   });
 
-  // Vac e press promo popup
-  (function() {
-    const POPUP_KEY = 'lareginella_vacpress_closed';
-    const popup = document.getElementById('vacPressPopup');
-    const closeBtn = document.getElementById('vacPressClose');
-    const tab = document.getElementById('vacPressTab');
-
-    function openPopup() {
-      popup.classList.add('vp-open');
-      tab.style.display = 'none';
-    }
-    function closePopup(remember) {
-      popup.classList.remove('vp-open');
-      tab.style.display = 'flex';
-      if (remember) sessionStorage.setItem(POPUP_KEY, '1');
-    }
-
-    closeBtn.addEventListener('click', () => closePopup(true));
-    tab.addEventListener('click', openPopup);
-
-    if (!sessionStorage.getItem(POPUP_KEY)) {
-      setTimeout(openPopup, 2800);
-    }
-  })();
 </script>
 
 <!-- Vac e press promo popup -->
@@ -1101,5 +1077,30 @@
   <div class="vp-footer">Solo a pranzo · Tutti i giorni 12:00–14:30</div>
 </div>
 
+<script>
+  (function() {
+    const POPUP_KEY = 'lareginella_vacpress_closed';
+    const popup = document.getElementById('vacPressPopup');
+    const closeBtn = document.getElementById('vacPressClose');
+    const tab = document.getElementById('vacPressTab');
+
+    function openPopup() {
+      popup.classList.add('vp-open');
+      tab.style.display = 'none';
+    }
+    function closePopup() {
+      popup.classList.remove('vp-open');
+      tab.style.display = 'flex';
+      sessionStorage.setItem(POPUP_KEY, '1');
+    }
+
+    closeBtn.addEventListener('click', closePopup);
+    tab.addEventListener('click', openPopup);
+
+    if (!sessionStorage.getItem(POPUP_KEY)) {
+      setTimeout(openPopup, 2800);
+    }
+  })();
+</script>
 </body>
 </html>
