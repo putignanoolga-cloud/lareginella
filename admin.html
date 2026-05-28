@@ -320,6 +320,7 @@
                 <option value="antipasti">Antipasti</option>
                 <option value="primi">Primi</option>
                 <option value="secondi">Secondi</option>
+                <option value="contorni">Contorni</option>
                 <option value="dolci">Dolci</option>
                 <option value="vini">Vini</option>
               </select>
@@ -507,27 +508,71 @@
   }
 
   // ── SAMPLE DATA ──
-  function seedSampleData() {
-    if (localStorage.getItem('lareginella_seeded')) return;
-    const today = new Date();
-    const bookings = [
-      { id:'LREG-A1B2C3', date: fmtDate(today, 1), dateFmt: fmtDateIt(today, 1), slot:'20:00', persons:'4', zone:'interno', nome:'Marco', cognome:'Rossi', email:'marco.rossi@gmail.com', tel:'+39 333 1234567', note:'', status:'confirmed', createdAt: new Date(today.getTime()-86400000).toISOString() },
-      { id:'LREG-D4E5F6', date: fmtDate(today, 0), dateFmt: fmtDateIt(today, 0), slot:'13:00', persons:'2', zone:'esterno', nome:'Laura', cognome:'Bianchi', email:'laura.bianchi@email.it', tel:'+39 347 9876543', note:'Allergia ai crostacei', status:'pending', createdAt: new Date(today.getTime()-3600000).toISOString() },
-      { id:'LREG-G7H8I9', date: fmtDate(today, 2), dateFmt: fmtDateIt(today, 2), slot:'19:30', persons:'6', zone:'privata', nome:'Giovanni', cognome:'Ferrari', email:'g.ferrari@work.com', tel:'+39 366 5556667', note:'Serata di compleanno', status:'pending', createdAt: new Date(today.getTime()-7200000).toISOString() },
-      { id:'LREG-J1K2L3', date: fmtDate(today, -1), dateFmt: fmtDateIt(today, -1), slot:'21:00', persons:'3', zone:'interno', nome:'Sofia', cognome:'Marino', email:'sofia.m@gmail.com', tel:'+39 320 1112223', note:'', status:'confirmed', createdAt: new Date(today.getTime()-172800000).toISOString() },
-      { id:'LREG-M4N5O6', date: fmtDate(today, -2), dateFmt: fmtDateIt(today, -2), slot:'12:30', persons:'2', zone:'', nome:'Antonio', cognome:'De Luca', email:'antonio.dl@hotmail.it', tel:'+39 338 4445556', note:'', status:'cancelled', createdAt: new Date(today.getTime()-259200000).toISOString() }
-    ];
-    localStorage.setItem('lareginella_bookings', JSON.stringify(bookings));
+  const FULL_MENU_SEED = [
+    {id:1,  nome:'Margherita',               cat:'pizze',    prezzo:'9.00',  tag:'Classica',   desc:'Pomodoro San Marzano DOP, fior di latte di Agerola, basilico fresco, olio EVO Ravece'},
+    {id:2,  nome:'Marinara',                 cat:'pizze',    prezzo:'7.00',  tag:'Vegan',      desc:'Pomodoro San Marzano, aglio fresco, origano dei Monti Lattari, olio EVO'},
+    {id:3,  nome:'Cosacca',                  cat:'pizze',    prezzo:'8.00',  tag:'Storica',    desc:'Pomodoro San Marzano, pecorino romano stagionato, basilico fresco'},
+    {id:4,  nome:'Diavola',                  cat:'pizze',    prezzo:'12.00', tag:'Piccante',   desc:'Pomodoro, fior di latte, salame piccante calabrese DOP, peperoncino fresco'},
+    {id:5,  nome:'Prosciutto e Funghi',      cat:'pizze',    prezzo:'13.00', tag:'',           desc:'Pomodoro, fior di latte, prosciutto cotto IGP, funghi champignon trifolati, basilico'},
+    {id:6,  nome:'Quattro Stagioni',         cat:'pizze',    prezzo:'14.00', tag:'',           desc:'Pomodoro, fior di latte, carciofi, funghi porcini, prosciutto cotto, olive di Gaeta'},
+    {id:7,  nome:'Friarielli e Salsiccia',   cat:'pizze',    prezzo:'14.00', tag:'Napoletana', desc:'Base bianca, fior di latte, friarielli napoletani saltati, salsiccia di suino campano'},
+    {id:8,  nome:'Bufala e Pomodorini',      cat:'pizze',    prezzo:'15.00', tag:'DOP',        desc:'Pomodoro, mozzarella di bufala DOP Campana, pomodorini del Piennolo, basilico, olio EVO'},
+    {id:9,  nome:"'Nduja e Stracciatella",  cat:'pizze',    prezzo:'16.00', tag:'Piccante',   desc:"Pomodoro, fior di latte, 'nduja calabrese spalmabile, stracciatella di bufala, cipolla caramellata"},
+    {id:10, nome:'Tartufo e Porcini',        cat:'pizze',    prezzo:'22.00', tag:'Stagionale', desc:'Base bianca, fior di latte, funghi porcini freschi, scaglie di tartufo nero, parmigiano 36 mesi'},
+    {id:11, nome:'Bruschetta al Pomodoro',   cat:'antipasti',prezzo:'6.00',  tag:'',  desc:'Pane casereccio tostato, pomodorini del Piennolo del Vesuvio, aglio, basilico fresco, olio Ravece'},
+    {id:12, nome:'Parmigiana di Melanzane',  cat:'antipasti',prezzo:'9.00',  tag:'',  desc:'Melanzane fritte, pomodoro al basilico, fior di latte, parmigiano'},
+    {id:13, nome:'Frittura Napoletana',      cat:'antipasti',prezzo:'10.00', tag:'',  desc:'Montanare fritte al sugo, crocchè di patate, frittatine di spaghetti al ragù, zeppoline'},
+    {id:14, nome:'Burrata di Puglia',        cat:'antipasti',prezzo:'11.00', tag:'',  desc:'Burrata cremosa su pomodorini arrosto, basilico, riduzione di aceto balsamico IGP, pinoli tostati'},
+    {id:15, nome:'Tagliere Campano',         cat:'antipasti',prezzo:'18.00', tag:'',  desc:'Selezione di salumi DOP campani, formaggi locali stagionati, olive di Gaeta, giardiniera'},
+    {id:16, nome:'Rigatoni al Ragù Napoletano',           cat:'primi',prezzo:'14.00',tag:'',desc:'Ragù della domenica cotto 8 ore con carne mista, ricotta di pecora, pecorino romano'},
+    {id:17, nome:'Gnocchi alla Sorrentina',               cat:'primi',prezzo:'13.00',tag:'',desc:'Gnocchi di patate fatti a mano, pomodoro San Marzano, fior di latte di Agerola, basilico'},
+    {id:18, nome:'Spaghetti alle Vongole',                cat:'primi',prezzo:'16.00',tag:'',desc:'Vongole veraci freschissime, aglio, peperoncino, Falanghina IGT, prezzemolo'},
+    {id:19, nome:'Linguine allo Scoglio',                 cat:'primi',prezzo:'19.00',tag:'',desc:'Cozze, vongole, gamberi, calamari, pomodorini, vino bianco, prezzemolo'},
+    {id:20, nome:'Pappardelle ai Funghi Porcini e Tartufo',cat:'primi',prezzo:'18.00',tag:'',desc:"Pappardelle fresche all'uovo, porcini di stagione, lamelle di tartufo nero, parmigiano 36 mesi"},
+    {id:21, nome:'Polpette al Ragù',     cat:'secondi',prezzo:'14.00',tag:'',desc:'Polpette di carne mista al ragù napoletano, servite con pane casereccio tostato'},
+    {id:22, nome:'Bistecca alla Brace',  cat:'secondi',prezzo:'22.00',tag:'',desc:'Taglio scelto di manzo nostrano, brace di legno duro, sale marino, rosmarino fresco, olio EVO'},
+    {id:23, nome:'Branzino al Forno',    cat:'secondi',prezzo:'24.00',tag:'',desc:'Branzino fresco al forno con erbe aromatiche, limone di Sorrento, capperi di Pantelleria'},
+    {id:24, nome:'Insalata Mista',         cat:'contorni',prezzo:'5.00',tag:'',desc:'Misticanza fresca di stagione, pomodorini, cetriolo, olive, olio EVO e aceto balsamico'},
+    {id:25, nome:'Friarielli Saltati',     cat:'contorni',prezzo:'6.00',tag:'',desc:'Friarielli napoletani saltati in padella con aglio, olio EVO e peperoncino'},
+    {id:26, nome:'Patate al Forno',        cat:'contorni',prezzo:'5.00',tag:'',desc:'Patate novelle al forno con rosmarino, aglio in camicia, sale grosso e olio EVO'},
+    {id:27, nome:'Melanzane alla Griglia', cat:'contorni',prezzo:'6.00',tag:'',desc:'Melanzane grigliate, menta fresca, aglio, olio EVO e un filo di aceto di vino bianco'},
+    {id:28, nome:'Babà al Rum',          cat:'dolci',prezzo:'6.00',tag:'',desc:'Il re dei dolci napoletani, inzuppato nel miglior rum invecchiato, con panna fresca e frutti di bosco'},
+    {id:29, nome:'Sfogliatella Riccia',  cat:'dolci',prezzo:'5.00',tag:'',desc:"Pasticceria napoletana autentica, ricotta fresca di pecora, scorza d'arancia candita, cannella"},
+    {id:30, nome:'Tiramisù della Casa',  cat:'dolci',prezzo:'7.00',tag:'',desc:'Mascarpone artigianale, savoiardi al rum, espresso napoletano ristretto, cacao amaro Valrhona'},
+    {id:31, nome:'Delizia al Limone',    cat:'dolci',prezzo:'7.00',tag:'',desc:'Torta soffice al limone di Sorrento IGP, crema limone, sciroppo agrumato, panna montata'},
+    {id:32, nome:'Cannolo Siciliano',    cat:'dolci',prezzo:'5.00',tag:'',desc:'Cannolo croccante ripieno di ricotta di pecora fresca, gocce di cioccolato, pistacchi di Bronte'},
+    {id:33, nome:'Aglianico del Taburno DOC 2019', cat:'vini',prezzo:'28.00',tag:'Rosso',     desc:'Corpo pieno, speziato, note di ciliegia matura, tabacco e cuoio'},
+    {id:34, nome:'Taurasi DOCG 2018',               cat:'vini',prezzo:'42.00',tag:'Rosso',     desc:'Il "Barolo del Sud" — strutturato, elegante, con sentori di frutta rossa matura'},
+    {id:35, nome:'Fiano di Avellino DOCG 2022',     cat:'vini',prezzo:'26.00',tag:'Bianco',    desc:'Elegante e minerale, con sentori di fiori bianchi, nocciola tostata e pesca matura'},
+    {id:36, nome:'Greco di Tufo DOCG 2022',         cat:'vini',prezzo:'24.00',tag:'Bianco',    desc:'Bouquet di albicocca, mandorla e note minerali. Ideale con pesce e antipasti di mare'},
+    {id:37, nome:'Falanghina del Sannio DOC 2023',  cat:'vini',prezzo:'20.00',tag:'Bianco',    desc:'Fresco e floreale, mela verde, pera e agrumi. Il bianco campano più versatile'},
+    {id:38, nome:'Prosecco DOC Treviso',            cat:'vini',prezzo:'18.00',tag:'Bollicine', desc:'Bollicine eleganti, fresco e fruttato, ideale per aperitivo o inizio pasto'},
+    {id:39, nome:'Champagne Brut NV',               cat:'vini',prezzo:'55.00',tag:'Bollicine', desc:'Selezione di cuvée francesi — per celebrare i momenti speciali con classe e raffinatezza'}
+  ];
 
-    const menuItems = [
-      {id:1, nome:'Margherita', cat:'pizze', prezzo:'9.00', tag:'Classica', desc:'Pomodoro San Marzano DOP, fior di latte, basilico'},
-      {id:2, nome:'Marinara', cat:'pizze', prezzo:'7.00', tag:'Vegan', desc:'Pomodoro, aglio, origano, olio EVO'},
-      {id:3, nome:'Diavola', cat:'pizze', prezzo:'12.00', tag:'Piccante', desc:'Pomodoro, fior di latte, salame piccante calabrese'},
-      {id:4, nome:'Bruschetta al Pomodoro', cat:'antipasti', prezzo:'6.00', tag:'', desc:'Pane casereccio, pomodorini del Piennolo'},
-      {id:5, nome:'Tiramisù della Casa', cat:'dolci', prezzo:'7.00', tag:'', desc:'Mascarpone, savoiardi, espresso napoletano'}
-    ];
-    localStorage.setItem('lareginella_menu', JSON.stringify(menuItems));
-    localStorage.setItem('lareginella_seeded', '1');
+  function seedSampleData() {
+    const today = new Date();
+
+    // Seed bookings once
+    if (!localStorage.getItem('lareginella_seeded')) {
+      const bookings = [
+        { id:'LREG-A1B2C3', date: fmtDate(today, 1), dateFmt: fmtDateIt(today, 1), slot:'20:00', persons:'4', zone:'interno', nome:'Marco', cognome:'Rossi', email:'marco.rossi@gmail.com', tel:'+39 333 1234567', note:'', status:'confirmed', createdAt: new Date(today.getTime()-86400000).toISOString() },
+        { id:'LREG-D4E5F6', date: fmtDate(today, 0), dateFmt: fmtDateIt(today, 0), slot:'13:00', persons:'2', zone:'esterno', nome:'Laura', cognome:'Bianchi', email:'laura.bianchi@email.it', tel:'+39 347 9876543', note:'Allergia ai crostacei', status:'pending', createdAt: new Date(today.getTime()-3600000).toISOString() },
+        { id:'LREG-G7H8I9', date: fmtDate(today, 2), dateFmt: fmtDateIt(today, 2), slot:'19:30', persons:'6', zone:'privata', nome:'Giovanni', cognome:'Ferrari', email:'g.ferrari@work.com', tel:'+39 366 5556667', note:'Serata di compleanno', status:'pending', createdAt: new Date(today.getTime()-7200000).toISOString() },
+        { id:'LREG-J1K2L3', date: fmtDate(today, -1), dateFmt: fmtDateIt(today, -1), slot:'21:00', persons:'3', zone:'interno', nome:'Sofia', cognome:'Marino', email:'sofia.m@gmail.com', tel:'+39 320 1112223', note:'', status:'confirmed', createdAt: new Date(today.getTime()-172800000).toISOString() },
+        { id:'LREG-M4N5O6', date: fmtDate(today, -2), dateFmt: fmtDateIt(today, -2), slot:'12:30', persons:'2', zone:'', nome:'Antonio', cognome:'De Luca', email:'antonio.dl@hotmail.it', tel:'+39 338 4445556', note:'', status:'cancelled', createdAt: new Date(today.getTime()-259200000).toISOString() }
+      ];
+      localStorage.setItem('lareginella_bookings', JSON.stringify(bookings));
+      localStorage.setItem('lareginella_seeded', '1');
+    }
+
+    // Merge full menu: add any missing seed items without overwriting existing/custom ones
+    const existing = JSON.parse(localStorage.getItem('lareginella_menu') || '[]');
+    const existingIds = new Set(existing.map(function(m){ return m.id; }));
+    const missing = FULL_MENU_SEED.filter(function(m){ return !existingIds.has(m.id); });
+    if (missing.length) {
+      localStorage.setItem('lareginella_menu', JSON.stringify([...existing, ...missing]));
+    }
   }
 
   function fmtDate(base, offset) {
