@@ -73,8 +73,10 @@
     }
     .nav-logo {
       font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400;
-      color: var(--panna); letter-spacing: 1.5px; display: flex; flex-direction: column; line-height: 1;
+      color: var(--panna); letter-spacing: 1.5px; display: flex; flex-direction: row; align-items: center; gap: 12px; line-height: 1;
     }
+    .nav-logo-text { display: flex; flex-direction: column; line-height: 1; }
+    .nav-logo-img { height: 46px; width: 46px; object-fit: contain; border-radius: 50%; flex-shrink: 0; }
     .nav-logo small {
       font-size: 0.47rem; letter-spacing: 5px; text-transform: uppercase;
       opacity: 0.45; margin-top: 4px; font-family: 'DM Sans', sans-serif; font-weight: 300;
@@ -313,8 +315,8 @@
 <!-- ── NAV ── -->
 <nav>
   <a href="index.html" class="nav-logo">
-    Le Reginelle
-    <small>Pizzeria Napoletana · Da 3 Generazioni</small>
+    <img id="navLogoImg" class="nav-logo-img" src="" alt="Logo Le Reginelle" style="display:none;">
+    <span class="nav-logo-text">Le Reginelle<small>Pizzeria Napoletana · Da 3 Generazioni</small></span>
   </a>
   <ul class="nav-links">
     <li><a href="index.html#chi-siamo">Chi Siamo</a></li>
@@ -463,6 +465,9 @@
 </a>
 
 <script>
+  // Apply logo from admin
+  (function(){ var imgs=JSON.parse(localStorage.getItem('lareginella_images')||'{}'); if(imgs.logo){var el=document.getElementById('navLogoImg');if(el){el.src=imgs.logo;el.style.display='block';}} })();
+
   // ── NAV ──
   const ham = document.getElementById('ham');
   const mobNav = document.getElementById('mobNav');
