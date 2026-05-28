@@ -833,10 +833,8 @@
     </div>
     <div class="footer-col">
       <h4>Orari</h4>
-      <ul>
-        <li><a href="#">Lun–Ven: 12–14:30 / 18–23</a></li>
-        <li><a href="#">Sabato: 12–14:30 / 18–23</a></li>
-        <li><a href="#">Domenica: 12–14:30 / 18–23</a></li>
+      <ul id="footerHoursList">
+        <li><a href="contatti.html">Vedi orari completi →</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -1106,6 +1104,27 @@
 </script>
 
 <script>
+  // Render footer hours from localStorage (saved by admin panel)
+  (function() {
+    var DEFAULT_HOURS = [
+      {day:'Lunedì',    open:false, a:'',            b:''},
+      {day:'Martedì',   open:true,  a:'12:00–15:00', b:'19:00–23:00'},
+      {day:'Mercoledì', open:true,  a:'12:00–15:00', b:'19:00–23:00'},
+      {day:'Giovedì',   open:true,  a:'12:00–15:00', b:'19:00–23:00'},
+      {day:'Venerdì',   open:true,  a:'12:00–15:00', b:'19:00–23:00'},
+      {day:'Sabato',    open:true,  a:'12:00–15:00', b:'19:00–23:30'},
+      {day:'Domenica',  open:true,  a:'12:00–16:00', b:''}
+    ];
+    var hours = JSON.parse(localStorage.getItem('lareginella_hours') || 'null') || DEFAULT_HOURS;
+    var ul = document.getElementById('footerHoursList');
+    if (!ul) return;
+    ul.innerHTML = hours.map(function(h) {
+      if (!h.open) return '<li style="color:rgba(248,245,242,0.25);font-size:0.78rem;">' + h.day + ': Chiuso</li>';
+      var slots = [h.a, h.b].filter(function(s){ return s && s.trim(); }).join(' / ');
+      return '<li style="font-size:0.78px;color:rgba(248,245,242,0.42);font-size:0.78rem;">' + h.day + ': ' + (slots || '—') + '</li>';
+    }).join('') + '<li><a href="contatti.html" style="color:var(--beige);font-size:0.72rem;">Orari completi →</a></li>';
+  })();
+
   // Apply custom images saved from admin panel
   (function() {
     var imgs = JSON.parse(localStorage.getItem('lareginella_images') || '{}');

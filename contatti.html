@@ -235,15 +235,7 @@
       </div>
       <div class="contact-block reveal">
         <p class="contact-block-label">🕐 Orari di Apertura</p>
-        <table class="hours-table" id="hoursTable">
-          <tr><td>Lunedì</td><td>12:00–14:30 / 18:00–23:00</td></tr>
-          <tr><td>Martedì</td><td>12:00–14:30 / 18:00–23:00</td></tr>
-          <tr><td>Mercoledì</td><td>12:00–14:30 / 18:00–23:00</td></tr>
-          <tr><td>Giovedì</td><td>12:00–14:30 / 18:00–23:00</td></tr>
-          <tr><td>Venerdì</td><td>12:00–14:30 / 18:00–23:00</td></tr>
-          <tr><td>Sabato</td><td>12:00–14:30 / 18:00–23:00</td></tr>
-          <tr><td>Domenica</td><td>12:00–14:30 / 18:00–23:00</td></tr>
-        </table>
+        <table class="hours-table" id="hoursTable"></table>
       </div>
     </div>
 
@@ -389,11 +381,31 @@
   ham.addEventListener('click', () => { ham.classList.toggle('open'); mobNav.classList.toggle('open'); document.body.style.overflow = ham.classList.contains('open')?'hidden':''; });
   function closeMob() { ham.classList.remove('open'); mobNav.classList.remove('open'); document.body.style.overflow = ''; }
 
-  // Highlight today in hours table
-  const today = new Date().getDay(); // 0=Sun, 1=Mon...
-  const rows = document.querySelectorAll('.hours-table tr');
-  const dayMap = [6, 0, 1, 2, 3, 4, 5]; // Sun=6, Mon=0...
-  if (rows[dayMap[today]]) rows[dayMap[today]].classList.add('today-row');
+  // Render hours from localStorage (saved by admin panel)
+  var DEFAULT_HOURS = [
+    {day:'Lunedì',    open:false, a:'',              b:''},
+    {day:'Martedì',   open:true,  a:'12:00–15:00',   b:'19:00–23:00'},
+    {day:'Mercoledì', open:true,  a:'12:00–15:00',   b:'19:00–23:00'},
+    {day:'Giovedì',   open:true,  a:'12:00–15:00',   b:'19:00–23:00'},
+    {day:'Venerdì',   open:true,  a:'12:00–15:00',   b:'19:00–23:00'},
+    {day:'Sabato',    open:true,  a:'12:00–15:00',   b:'19:00–23:30'},
+    {day:'Domenica',  open:true,  a:'12:00–16:00',   b:''}
+  ];
+  var hours = JSON.parse(localStorage.getItem('lareginella_hours') || 'null') || DEFAULT_HOURS;
+  var hoursTable = document.getElementById('hoursTable');
+  hoursTable.innerHTML = hours.map(function(h) {
+    if (!h.open) {
+      return '<tr><td>' + h.day + '</td><td class="closed">Chiuso</td></tr>';
+    }
+    var slots = [h.a, h.b].filter(function(s){ return s && s.trim(); }).join(' &nbsp;/&nbsp; ');
+    return '<tr><td>' + h.day + '</td><td>' + (slots || '—') + '</td></tr>';
+  }).join('');
+
+  // Highlight today
+  var todayIdx = new Date().getDay(); // 0=Sun
+  var dayMap = [6, 0, 1, 2, 3, 4, 5]; // Sun→6, Mon→0 ...
+  var rows = document.querySelectorAll('.hours-table tr');
+  if (rows[dayMap[todayIdx]]) rows[dayMap[todayIdx]].classList.add('today-row');
 
   // Scroll reveal
   const observer = new IntersectionObserver(entries => {
