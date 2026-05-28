@@ -181,7 +181,31 @@
     .toast.error { border-left: 3px solid #E05555; }
     .toast.warn { border-left: 3px solid var(--beige); }
 
-    @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; } }
+    /* ── MOBILE SIDEBAR DRAWER ── */
+    .mob-menu-btn {
+      display: none; background: none; border: none; cursor: pointer;
+      padding: 8px; flex-direction: column; gap: 5px; margin-right: 4px;
+    }
+    .mob-menu-btn span { display: block; width: 20px; height: 1.5px; background: var(--panna); transition: all 0.3s; }
+
+    .sidebar-backdrop {
+      display: none; position: fixed; inset: 0; top: 64px;
+      background: rgba(0,0,0,0.65); z-index: 799;
+    }
+    .sidebar-backdrop.show { display: block; }
+
+    @media (max-width: 768px) {
+      .mob-menu-btn { display: flex; }
+      .sidebar {
+        position: fixed; top: 64px; left: 0; bottom: 0;
+        transform: translateX(-100%); transition: transform 0.28s ease;
+        z-index: 800; display: block !important;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding: 20px 16px; }
+      .topbar-right a { display: none; }
+      .hours-row { grid-template-columns: 90px 1fr 1fr 70px; gap: 8px; }
+    }
 
     /* ── IMAGE SLOTS ── */
     .img-slot-card { background: var(--surface2); border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s; overflow: hidden; }
@@ -222,10 +246,15 @@
 <div id="adminApp">
   <!-- Topbar -->
   <div class="topbar">
-    <div class="topbar-logo">
-      Le Reginelle
-      <span>Admin</span>
-      <span class="topbar-badge">v1.0</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="mob-menu-btn" id="mobMenuBtn" onclick="toggleAdminSidebar()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topbar-logo">
+        Le Reginelle
+        <span>Admin</span>
+        <span class="topbar-badge">v1.0</span>
+      </div>
     </div>
     <div class="topbar-right">
       <a href="index.html" target="_blank">← Vai al sito</a>
@@ -252,6 +281,9 @@
         <div class="sidebar-item" onclick="showPanel('impostazioni')"><span class="sidebar-icon">⚙️</span> Impostazioni</div>
       </div>
     </div>
+
+    <!-- Mobile sidebar backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeAdminSidebar()"></div>
 
     <!-- Main -->
     <div class="main">
@@ -576,6 +608,18 @@
   }
 
   // ── PANEL NAV ──
+  function toggleAdminSidebar() {
+    var sidebar = document.querySelector('.sidebar');
+    var backdrop = document.getElementById('sidebarBackdrop');
+    var isOpen = sidebar.classList.toggle('open');
+    backdrop.classList.toggle('show', isOpen);
+  }
+
+  function closeAdminSidebar() {
+    document.querySelector('.sidebar').classList.remove('open');
+    document.getElementById('sidebarBackdrop').classList.remove('show');
+  }
+
   function showPanel(id) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-'+id).classList.add('active');
@@ -586,6 +630,7 @@
     if (id==='prenotazioni') renderAllBookings();
     if (id==='menu') renderMenuTable();
     if (id==='orari') renderHours();
+    if (window.innerWidth <= 768) closeAdminSidebar();
   }
 
   // ── STATS ──
