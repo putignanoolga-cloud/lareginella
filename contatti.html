@@ -87,7 +87,7 @@
     .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px; background: var(--beige); transform: scaleX(0); transform-origin: left; transition: transform 0.25s ease; }
     .nav-links a:hover { color: var(--panna); } .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); } .nav-links a.active { color: var(--panna); }
     .nav-cta { background: var(--bordeaux) !important; color: var(--panna) !important; padding: 11px 26px; border: 1px solid rgba(201,168,112,0.2); } .nav-cta::after { display:none!important; }
-    .ham { display: flex; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; }
+    .ham { display: flex; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; outline: none; }
     .ham span { display: block; width: 22px; height: 1.5px; background: var(--panna); transition: all 0.35s ease; }
     .ham.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); } .ham.open span:nth-child(2) { opacity: 0; } .ham.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
     .mob-nav { display: none; position: fixed; inset: 0; z-index: 1100; background: #0D0806; flex-direction: column; align-items: center; justify-content: center; }
