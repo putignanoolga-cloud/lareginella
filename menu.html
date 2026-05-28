@@ -577,16 +577,14 @@
         </div>
       </div>`).join('');
 
-    // Intersection observer (re-run after render)
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   }
-
-  // Render menu before setting up observer
-  renderMenu();
 
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.08 });
+
+  renderMenu();
+
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
