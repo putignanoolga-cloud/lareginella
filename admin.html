@@ -182,6 +182,16 @@
     .toast.warn { border-left: 3px solid var(--beige); }
 
     @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; } }
+
+    /* ── IMAGE SLOTS ── */
+    .img-slot-card { background: var(--surface2); border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s; overflow: hidden; }
+    .img-slot-card:hover { border-color: var(--beige); }
+    .img-slot-thumb { height: 140px; background-size: cover; background-position: center; background-color: rgba(248,245,242,0.05); position: relative; }
+    .img-slot-badge { position: absolute; top: 8px; right: 8px; background: var(--oliva); color: var(--panna); font-size: 0.5rem; letter-spacing: 1px; padding: 3px 8px; text-transform: uppercase; }
+    .img-slot-info { padding: 12px; }
+    .img-slot-name { font-size: 0.78rem; color: var(--panna); font-weight: 500; margin-bottom: 3px; }
+    .img-slot-hint { font-size: 0.65rem; color: rgba(248,245,242,0.3); margin-bottom: 10px; }
+    .img-slot-actions { display: flex; gap: 6px; flex-wrap: wrap; }
   </style>
 </head>
 <body>
@@ -388,41 +398,17 @@
       <div class="panel" id="panel-galleria">
         <div class="page-header">
           <h1>Gestione <em>Immagini</em></h1>
-          <p>Carica e gestisci le fotografie del ristorante</p>
+          <p>Clicca su una foto per cambiarla — le modifiche appaiono subito sul sito</p>
         </div>
         <div class="card">
-          <h3>Carica Nuove Immagini</h3>
-          <div style="border: 2px dashed rgba(248,245,242,0.15); padding: 48px; text-align: center; cursor: pointer; transition: border-color 0.2s;" id="dropzone" onclick="document.getElementById('fileInput').click()">
-            <div style="font-size: 2rem; margin-bottom: 12px;">📷</div>
-            <p style="color: rgba(248,245,242,0.5); font-size: 0.8rem; margin-bottom: 6px;">Trascina le immagini qui o clicca per selezionarle</p>
-            <p style="color: rgba(248,245,242,0.25); font-size: 0.68rem;">PNG, JPG, WEBP — Max 5MB per immagine</p>
-            <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
-          </div>
-          <p style="margin-top: 12px; font-size: 0.68rem; color: rgba(248,245,242,0.3); font-style: italic;">Le immagini caricate sostituiranno automaticamente i placeholder mantenendo il layout esistente.</p>
-        </div>
-        <div class="card">
-          <h3>Immagini Attuali del Sito</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;">
-            <div style="aspect-ratio: 1; background: rgba(248,245,242,0.05); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.68rem; color: rgba(248,245,242,0.3); cursor: pointer;">
-              <span style="font-size:1.5rem;">🖼️</span>Hero Background
-            </div>
-            <div style="aspect-ratio: 1; background: rgba(248,245,242,0.05); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.68rem; color: rgba(248,245,242,0.3); cursor: pointer;">
-              <span style="font-size:1.5rem;">🖼️</span>Chi Siamo 1
-            </div>
-            <div style="aspect-ratio: 1; background: rgba(248,245,242,0.05); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.68rem; color: rgba(248,245,242,0.3); cursor: pointer;">
-              <span style="font-size:1.5rem;">🖼️</span>Chi Siamo 2
-            </div>
-            <div style="aspect-ratio: 1; background: rgba(248,245,242,0.05); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.68rem; color: rgba(248,245,242,0.3); cursor: pointer;">
-              <span style="font-size:1.5rem;">🖼️</span>Galleria 1
-            </div>
-            <div style="aspect-ratio: 1; background: rgba(248,245,242,0.05); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.68rem; color: rgba(248,245,242,0.3); cursor: pointer;">
-              <span style="font-size:1.5rem;">🖼️</span>Galleria 2
-            </div>
-            <div style="aspect-ratio: 1; background: rgba(248,245,242,0.05); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.68rem; color: rgba(248,245,242,0.3); cursor: pointer;">
-              <span style="font-size:1.5rem;">+</span>Aggiungi
-            </div>
+          <h3>Foto del Sito</h3>
+          <p style="font-size:0.75rem;color:rgba(248,245,242,0.4);margin-bottom:20px;">Clicca su uno slot o sul bottone "Cambia" per caricare la tua foto. Formato PNG, JPG o WEBP, max 5MB. Le foto vengono salvate nel browser e appaiono automaticamente sul sito.</p>
+          <div id="imgSlotsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;"></div>
+          <div style="margin-top:20px;">
+            <button class="admin-btn secondary" onclick="resetAllImages()">Ripristina tutte le foto default</button>
           </div>
         </div>
+        <input type="file" id="imgFileInput" accept="image/*" style="display:none">
       </div>
 
       <!-- IMPOSTAZIONI -->
@@ -505,6 +491,7 @@
     renderMenuTable();
     renderHours();
     renderChart();
+    renderImageSlots();
   }
 
   // ── SAMPLE DATA ──
@@ -805,6 +792,97 @@
         <span class="chart-bar-val">${cnt}</span>
       </div>`;
     }).join('');
+  }
+
+  // ── IMAGE MANAGEMENT ──
+  const IMG_SLOTS = [
+    { id:'hero_bg',    label:'Copertina Principale',  hint:'Foto grande nella home page' },
+    { id:'story_bg',   label:'Sfondo "Prenota"',      hint:'Sfondo sezione prenota un tavolo' },
+    { id:'chisiamo_1', label:'Chi Siamo — Grande',    hint:'Foto principale sezione storia' },
+    { id:'chisiamo_2', label:'Chi Siamo — Piccola',   hint:'Foto forno o dettaglio' },
+    { id:'gallery_1',  label:'Galleria — Interno',    hint:'Foto grande galleria' },
+    { id:'gallery_2',  label:'Galleria — Chef',       hint:'Foto dello chef' },
+    { id:'gallery_3',  label:'Galleria — Pizza',      hint:'Foto pizza' },
+    { id:'gallery_4',  label:'Galleria — Tavoli',     hint:'Foto sala e tavoli' },
+    { id:'gallery_5',  label:'Galleria — Ingredienti',hint:'Foto ingredienti freschi' }
+  ];
+
+  const DEFAULT_IMG_PREVIEWS = {
+    hero_bg:    'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=300&q=50',
+    story_bg:   'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=300&q=50',
+    chisiamo_1: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=300&q=50',
+    chisiamo_2: 'https://images.unsplash.com/photo-1601924582970-9238bcb495d9?auto=format&fit=crop&w=300&q=50',
+    gallery_1:  'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=300&q=50',
+    gallery_2:  'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=300&q=50',
+    gallery_3:  'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=300&q=50',
+    gallery_4:  'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?auto=format&fit=crop&w=300&q=50',
+    gallery_5:  'https://images.unsplash.com/photo-1506354666786-959d6d497f1a?auto=format&fit=crop&w=300&q=50'
+  };
+
+  let currentImgSlot = null;
+
+  function getImages() { return JSON.parse(localStorage.getItem('lareginella_images') || '{}'); }
+  function saveImages(imgs) { localStorage.setItem('lareginella_images', JSON.stringify(imgs)); }
+
+  function renderImageSlots() {
+    const imgs = getImages();
+    const grid = document.getElementById('imgSlotsGrid');
+    if (!grid) return;
+    grid.innerHTML = IMG_SLOTS.map(function(slot) {
+      const isCustom = !!imgs[slot.id];
+      const thumb = isCustom ? imgs[slot.id] : DEFAULT_IMG_PREVIEWS[slot.id];
+      return '<div class="img-slot-card" onclick="openImgPicker(\'' + slot.id + '\')">' +
+        '<div class="img-slot-thumb" style="background-image:url(\'' + thumb + '\')">' +
+          (isCustom ? '<div class="img-slot-badge">✓ Tua foto</div>' : '') +
+        '</div>' +
+        '<div class="img-slot-info">' +
+          '<div class="img-slot-name">' + slot.label + '</div>' +
+          '<div class="img-slot-hint">' + slot.hint + '</div>' +
+          '<div class="img-slot-actions">' +
+            '<button class="action-btn" onclick="event.stopPropagation();openImgPicker(\'' + slot.id + '\')">📷 Cambia</button>' +
+            (isCustom ? '<button class="action-btn danger" onclick="event.stopPropagation();removeImg(\'' + slot.id + '\')">Ripristina</button>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function openImgPicker(slotId) {
+    currentImgSlot = slotId;
+    const input = document.getElementById('imgFileInput');
+    input.value = '';
+    input.click();
+  }
+
+  document.getElementById('imgFileInput').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { showToast('File troppo grande! Massimo 5MB', 'error'); return; }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const imgs = getImages();
+      imgs[currentImgSlot] = e.target.result;
+      saveImages(imgs);
+      renderImageSlots();
+      const slotLabel = IMG_SLOTS.find(function(s){ return s.id === currentImgSlot; });
+      showToast('Foto aggiornata: ' + (slotLabel ? slotLabel.label : currentImgSlot), 'success');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function removeImg(slotId) {
+    const imgs = getImages();
+    delete imgs[slotId];
+    saveImages(imgs);
+    renderImageSlots();
+    showToast('Foto ripristinata al default', 'warn');
+  }
+
+  function resetAllImages() {
+    if (!confirm('Ripristinare tutte le foto ai valori originali del sito?')) return;
+    localStorage.removeItem('lareginella_images');
+    renderImageSlots();
+    showToast('Tutte le foto ripristinate ai default', 'warn');
   }
 
   // ── TOAST ──

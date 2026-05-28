@@ -1104,5 +1104,34 @@
     }
   })();
 </script>
+
+<script>
+  // Apply custom images saved from admin panel
+  (function() {
+    var imgs = JSON.parse(localStorage.getItem('lareginella_images') || '{}');
+    if (!Object.keys(imgs).length) return;
+    if (imgs.hero_bg) {
+      var heroBg = document.querySelector('.hero-bg');
+      if (heroBg) heroBg.style.backgroundImage = "url('" + imgs.hero_bg + "')";
+    }
+    if (imgs.story_bg) {
+      var s = document.createElement('style');
+      s.textContent = ".prenota-cta::before { background-image: url('" + imgs.story_bg + "') !important; }";
+      document.head.appendChild(s);
+    }
+    if (imgs.chisiamo_1) {
+      var el = document.querySelector('.chiamo-img-main');
+      if (el) el.src = imgs.chisiamo_1;
+    }
+    if (imgs.chisiamo_2) {
+      var el2 = document.querySelector('.chiamo-img-sm');
+      if (el2) el2.src = imgs.chisiamo_2;
+    }
+    var galKeys = ['gallery_1','gallery_2','gallery_3','gallery_4','gallery_5'];
+    document.querySelectorAll('.gallery-grid .g-item img').forEach(function(el, i) {
+      if (imgs[galKeys[i]]) el.src = imgs[galKeys[i]];
+    });
+  })();
+</script>
 </body>
 </html>
