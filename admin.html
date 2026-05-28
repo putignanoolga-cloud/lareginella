@@ -316,8 +316,9 @@
           <h1>Gestione <em>Menu</em></h1>
           <p>Aggiungi, modifica o rimuovi piatti dal menu</p>
         </div>
-        <div class="card">
-          <h3>Aggiungi Nuovo Piatto</h3>
+        <div class="card" id="menuFormCard">
+          <h3 id="menuFormTitle">Aggiungi Nuovo Piatto</h3>
+          <input type="hidden" id="mEditId">
           <div class="form-row two">
             <div class="admin-field">
               <label>Nome Piatto</label>
@@ -352,7 +353,10 @@
               <textarea id="mDesc" placeholder="Ingredienti e descrizione del piatto..."></textarea>
             </div>
           </div>
-          <button class="admin-btn" onclick="addMenuItem()">+ Aggiungi Piatto</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="admin-btn" id="menuSaveBtn" onclick="saveMenuItem()">+ Aggiungi Piatto</button>
+            <button class="admin-btn secondary" id="menuCancelBtn" onclick="cancelEditMenuItem()" style="display:none;">Annulla</button>
+          </div>
         </div>
         <div class="table-wrap">
           <div class="table-toolbar"><h3>Piatti nel Menu</h3></div>
@@ -676,35 +680,91 @@
     const tbody = document.getElementById('menuTableBody');
     if (!items.length) { tbody.innerHTML='<tr><td colspan="5"><div class="empty-state">Nessun piatto ancora</div></td></tr>'; return; }
     tbody.innerHTML = items.map(m=>`
-      <tr>
+      <tr id="row-${m.id}">
         <td><strong style="color:var(--panna);">${m.nome}</strong><br><span style="font-size:0.68rem;color:rgba(248,245,242,0.35);">${m.desc}</span></td>
         <td>${catLabel(m.cat)}</td>
         <td style="color:var(--beige);font-family:'Cormorant Garamond',serif;">€ ${parseFloat(m.prezzo).toFixed(2)}</td>
         <td>${m.tag?`<span class="badge pending">${m.tag}</span>`:''}</td>
-        <td><button class="action-btn danger" onclick="deleteMenuItem(${m.id})">🗑 Rimuovi</button></td>
+        <td>
+          <button class="action-btn" onclick="editMenuItem(${m.id})">✏️ Modifica</button>
+          <button class="action-btn danger" onclick="deleteMenuItem(${m.id})">🗑 Rimuovi</button>
+        </td>
       </tr>`).join('');
   }
 
-  function catLabel(c) { return {pizze:'🍕 Pizze',antipasti:'🫒 Antipasti',primi:'🍝 Primi',secondi:'🥩 Secondi',dolci:'🍮 Dolci',vini:'🍷 Vini'}[c]||c; }
+  function catLabel(c) { return {pizze:'🍕 Pizze',antipasti:'🫒 Antipasti',primi:'🍝 Primi',secondi:'🥩 Secondi',contorni:'🥗 Contorni',dolci:'🍮 Dolci',vini:'🍷 Vini'}[c]||c; }
 
-  function addMenuItem() {
+  function editMenuItem(id) {
+    const items = JSON.parse(localStorage.getItem('lareginella_menu')||'[]');
+    const m = items.find(function(x){ return x.id === id; });
+    if (!m) return;
+    document.getElementById('mEditId').value = m.id;
+    document.getElementById('mNome').value = m.nome;
+    document.getElementById('mCat').value = m.cat;
+    document.getElementById('mPrezzo').value = m.prezzo;
+    document.getElementById('mTag').value = m.tag || '';
+    document.getElementById('mDesc').value = m.desc || '';
+    document.getElementById('menuFormTitle').textContent = 'Modifica Piatto';
+    document.getElementById('menuSaveBtn').textContent = '💾 Salva Modifiche';
+    document.getElementById('menuCancelBtn').style.display = 'inline-block';
+    document.getElementById('menuFormCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Highlight the row being edited
+    document.querySelectorAll('#menuTableBody tr').forEach(function(r){ r.style.background=''; });
+    const row = document.getElementById('row-' + id);
+    if (row) row.style.background = 'rgba(201,168,112,0.07)';
+  }
+
+  function saveMenuItem() {
     const nome = document.getElementById('mNome').value.trim();
     const prezzo = document.getElementById('mPrezzo').value;
     if (!nome || !prezzo) { showToast('Inserisci nome e prezzo', 'error'); return; }
-    const items = JSON.parse(localStorage.getItem('lareginella_menu')||'[]');
-    items.push({ id: Date.now(), nome, cat: document.getElementById('mCat').value, prezzo, tag: document.getElementById('mTag').value, desc: document.getElementById('mDesc').value });
-    localStorage.setItem('lareginella_menu', JSON.stringify(items));
-    document.getElementById('mNome').value=''; document.getElementById('mPrezzo').value=''; document.getElementById('mTag').value=''; document.getElementById('mDesc').value='';
-    renderMenuTable();
-    showToast('Piatto aggiunto al menu!','success');
+    const editId = document.getElementById('mEditId').value;
+    let items = JSON.parse(localStorage.getItem('lareginella_menu')||'[]');
+    if (editId) {
+      // Update existing
+      const idx = items.findIndex(function(m){ return String(m.id) === String(editId); });
+      if (idx >= 0) {
+        items[idx] = { id: items[idx].id, nome, cat: document.getElementById('mCat').value, prezzo, tag: document.getElementById('mTag').value, desc: document.getElementById('mDesc').value };
+      }
+      localStorage.setItem('lareginella_menu', JSON.stringify(items));
+      cancelEditMenuItem();
+      renderMenuTable();
+      showToast('Piatto aggiornato con successo!', 'success');
+    } else {
+      // Add new
+      items.push({ id: Date.now(), nome, cat: document.getElementById('mCat').value, prezzo, tag: document.getElementById('mTag').value, desc: document.getElementById('mDesc').value });
+      localStorage.setItem('lareginella_menu', JSON.stringify(items));
+      clearMenuForm();
+      renderMenuTable();
+      showToast('Piatto aggiunto al menu!', 'success');
+    }
+  }
+
+  function cancelEditMenuItem() {
+    clearMenuForm();
+    document.getElementById('menuFormTitle').textContent = 'Aggiungi Nuovo Piatto';
+    document.getElementById('menuSaveBtn').textContent = '+ Aggiungi Piatto';
+    document.getElementById('menuCancelBtn').style.display = 'none';
+    document.querySelectorAll('#menuTableBody tr').forEach(function(r){ r.style.background=''; });
+  }
+
+  function clearMenuForm() {
+    document.getElementById('mEditId').value = '';
+    document.getElementById('mNome').value = '';
+    document.getElementById('mPrezzo').value = '';
+    document.getElementById('mTag').value = '';
+    document.getElementById('mDesc').value = '';
+    document.getElementById('mCat').value = 'pizze';
   }
 
   function deleteMenuItem(id) {
+    if (!confirm('Rimuovere definitivamente questo piatto dal menu?')) return;
     let items = JSON.parse(localStorage.getItem('lareginella_menu')||'[]');
-    items = items.filter(m=>m.id!==id);
-    localStorage.setItem('lareginella_menu',JSON.stringify(items));
+    items = items.filter(function(m){ return m.id !== id; });
+    localStorage.setItem('lareginella_menu', JSON.stringify(items));
+    if (String(document.getElementById('mEditId').value) === String(id)) cancelEditMenuItem();
     renderMenuTable();
-    showToast('Piatto rimosso dal menu','warn');
+    showToast('Piatto rimosso dal menu', 'warn');
   }
 
   // ── ORARI ──
