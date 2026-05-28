@@ -1195,7 +1195,7 @@
         if (el) { el.src = imgs.logo; el.style.display = 'block'; }
       });
     }
-    if (imgs.hero_bg) {
+    if (imgs.hero_bg && imgs.hero_bg !== 'VIDEO') {
       var heroBg = document.querySelector('.hero-bg');
       if (heroBg) heroBg.style.backgroundImage = "url('" + imgs.hero_bg + "')";
     }
@@ -1214,8 +1214,51 @@
     }
     var galKeys = ['gallery_1','gallery_2','gallery_3','gallery_4','gallery_5'];
     document.querySelectorAll('.gallery-grid .g-item img').forEach(function(el, i) {
-      if (imgs[galKeys[i]]) el.src = imgs[galKeys[i]];
+      if (imgs[galKeys[i]] && imgs[galKeys[i]] !== 'VIDEO') el.src = imgs[galKeys[i]];
     });
+  })();
+
+  // Apply videos from IndexedDB (MP4 uploaded via admin)
+  (function() {
+    var req = indexedDB.open('lareginella_media', 1);
+    req.onupgradeneeded = function(e) { e.target.result.createObjectStore('videos'); };
+    req.onsuccess = function(e) {
+      var db = e.target.result;
+      function getVid(slotId, cb) {
+        try {
+          var r = db.transaction('videos','readonly').objectStore('videos').get(slotId);
+          r.onsuccess = function(e2) { cb(e2.target.result||null); };
+          r.onerror = function(){ cb(null); };
+        } catch(ex){ cb(null); }
+      }
+      // Hero background video
+      getVid('hero_bg', function(blob) {
+        if (!blob) return;
+        var heroBg = document.querySelector('.hero-bg');
+        if (!heroBg) return;
+        heroBg.style.backgroundImage = 'none';
+        var v = document.createElement('video');
+        v.src = URL.createObjectURL(blob);
+        v.autoplay = true; v.muted = true; v.loop = true; v.playsInline = true;
+        v.setAttribute('playsinline','');
+        v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+        heroBg.appendChild(v);
+      });
+      // Gallery videos
+      var galKeys = ['gallery_1','gallery_2','gallery_3','gallery_4','gallery_5'];
+      document.querySelectorAll('.gallery-grid .g-item img').forEach(function(img, i) {
+        getVid(galKeys[i], function(blob) {
+          if (!blob) return;
+          var v = document.createElement('video');
+          v.src = URL.createObjectURL(blob);
+          v.autoplay = true; v.muted = true; v.loop = true; v.playsInline = true;
+          v.setAttribute('playsinline','');
+          v.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+          img.parentNode.replaceChild(v, img);
+        });
+      });
+    };
+    req.onerror = function(){};
   })();
 </script>
 </body>

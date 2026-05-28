@@ -405,14 +405,14 @@
           <p>Clicca su una foto per cambiarla — le modifiche appaiono subito sul sito</p>
         </div>
         <div class="card">
-          <h3>Foto del Sito</h3>
-          <p style="font-size:0.75rem;color:rgba(248,245,242,0.4);margin-bottom:20px;">Clicca su uno slot o sul bottone "Cambia" per caricare la tua foto. Formato PNG, JPG o WEBP, max 5MB. Le foto vengono salvate nel browser e appaiono automaticamente sul sito.</p>
+          <h3>Foto e Video del Sito</h3>
+          <p style="font-size:0.75rem;color:rgba(248,245,242,0.4);margin-bottom:20px;">Clicca su uno slot per caricare una foto o un video. <strong style="color:rgba(248,245,242,0.6);">Foto:</strong> PNG, JPG, WEBP (max 5MB) — <strong style="color:rgba(248,245,242,0.6);">Video MP4:</strong> disponibile sugli slot con 🎬, nessun limite di dimensione.</p>
           <div id="imgSlotsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;"></div>
-          <div style="margin-top:20px;">
-            <button class="admin-btn secondary" onclick="resetAllImages()">Ripristina tutte le foto default</button>
+          <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="admin-btn secondary" onclick="resetAllImages()">Ripristina tutto ai default</button>
           </div>
         </div>
-        <input type="file" id="imgFileInput" accept="image/*" style="display:none">
+        <input type="file" id="imgFileInput" accept="image/*,video/mp4,video/webm,video/ogg" style="display:none">
       </div>
 
       <!-- IMPOSTAZIONI -->
@@ -854,18 +854,18 @@
     }).join('');
   }
 
-  // ── IMAGE MANAGEMENT ──
+  // ── IMAGE & VIDEO MANAGEMENT ──
   const IMG_SLOTS = [
-    { id:'logo',       label:'Logo Ristorante',        hint:'Appare nella barra di navigazione su tutte le pagine' },
-    { id:'hero_bg',    label:'Copertina Principale',  hint:'Foto grande nella home page' },
-    { id:'story_bg',   label:'Sfondo "Prenota"',      hint:'Sfondo sezione prenota un tavolo' },
-    { id:'chisiamo_1', label:'Chi Siamo — Grande',    hint:'Foto principale sezione storia' },
-    { id:'chisiamo_2', label:'Chi Siamo — Piccola',   hint:'Foto forno o dettaglio' },
-    { id:'gallery_1',  label:'Galleria — Interno',    hint:'Foto grande galleria' },
-    { id:'gallery_2',  label:'Galleria — Chef',       hint:'Foto dello chef' },
-    { id:'gallery_3',  label:'Galleria — Pizza',      hint:'Foto pizza' },
-    { id:'gallery_4',  label:'Galleria — Tavoli',     hint:'Foto sala e tavoli' },
-    { id:'gallery_5',  label:'Galleria — Ingredienti',hint:'Foto ingredienti freschi' }
+    { id:'logo',       label:'Logo Ristorante',        hint:'Navbar su tutte le pagine',         video:false },
+    { id:'hero_bg',    label:'Copertina Principale',   hint:'Foto/video grande nella home page',  video:true  },
+    { id:'story_bg',   label:'Sfondo "Prenota"',       hint:'Sfondo sezione prenota un tavolo',   video:false },
+    { id:'chisiamo_1', label:'Chi Siamo — Grande',     hint:'Foto principale sezione storia',     video:false },
+    { id:'chisiamo_2', label:'Chi Siamo — Piccola',    hint:'Foto forno o dettaglio',             video:false },
+    { id:'gallery_1',  label:'Galleria — Interno',     hint:'Foto/video galleria grande',         video:true  },
+    { id:'gallery_2',  label:'Galleria — Chef',        hint:'Foto/video galleria',                video:true  },
+    { id:'gallery_3',  label:'Galleria — Pizza',       hint:'Foto/video galleria',                video:true  },
+    { id:'gallery_4',  label:'Galleria — Tavoli',      hint:'Foto/video galleria',                video:true  },
+    { id:'gallery_5',  label:'Galleria — Ingredienti', hint:'Foto/video galleria',                video:true  }
   ];
 
   const DEFAULT_IMG_PREVIEWS = {
@@ -882,35 +882,95 @@
 
   let currentImgSlot = null;
 
+  // localStorage helpers (images as base64)
   function getImages() { return JSON.parse(localStorage.getItem('lareginella_images') || '{}'); }
   function saveImages(imgs) { localStorage.setItem('lareginella_images', JSON.stringify(imgs)); }
+
+  // IndexedDB helpers (video blobs — no size limit)
+  function openVideoDB(cb) {
+    var req = indexedDB.open('lareginella_media', 1);
+    req.onupgradeneeded = function(e) { e.target.result.createObjectStore('videos'); };
+    req.onsuccess = function(e) { cb(e.target.result); };
+    req.onerror = function() { cb(null); };
+  }
+  function saveVideoToDB(slotId, blob, onDone) {
+    openVideoDB(function(db) {
+      if (!db) { showToast('Errore salvataggio video', 'error'); return; }
+      var tx = db.transaction('videos', 'readwrite');
+      tx.objectStore('videos').put(blob, slotId);
+      tx.oncomplete = function() { if (onDone) onDone(); };
+    });
+  }
+  function deleteVideoFromDB(slotId, onDone) {
+    openVideoDB(function(db) {
+      if (!db) return;
+      var tx = db.transaction('videos', 'readwrite');
+      tx.objectStore('videos').delete(slotId);
+      tx.oncomplete = function() { if (onDone) onDone(); };
+    });
+  }
+  function getVideoFromDB(slotId, cb) {
+    openVideoDB(function(db) {
+      if (!db) { cb(null); return; }
+      var tx = db.transaction('videos', 'readonly');
+      var req = tx.objectStore('videos').get(slotId);
+      req.onsuccess = function(e) { cb(e.target.result || null); };
+      req.onerror = function() { cb(null); };
+    });
+  }
 
   function renderImageSlots() {
     const imgs = getImages();
     const grid = document.getElementById('imgSlotsGrid');
     if (!grid) return;
     grid.innerHTML = IMG_SLOTS.map(function(slot) {
-      const isCustom = !!imgs[slot.id];
-      const thumb = isCustom ? imgs[slot.id] : DEFAULT_IMG_PREVIEWS[slot.id];
+      const isVideo   = imgs[slot.id] === 'VIDEO';
+      const isCustomImg = imgs[slot.id] && !isVideo;
+      const isCustom  = isVideo || isCustomImg;
+      const thumb = isCustomImg ? imgs[slot.id] : DEFAULT_IMG_PREVIEWS[slot.id];
+      const btnLabel = slot.video ? '📷🎬 Cambia' : '📷 Cambia';
       return '<div class="img-slot-card" onclick="openImgPicker(\'' + slot.id + '\')">' +
-        '<div class="img-slot-thumb" style="background-image:url(\'' + thumb + '\')">' +
-          (isCustom ? '<div class="img-slot-badge">✓ Tua foto</div>' : '') +
-        '</div>' +
+        (isVideo ?
+          '<div class="img-slot-thumb" id="slot-thumb-' + slot.id + '" style="background:#0a0a0a;display:flex;align-items:center;justify-content:center;position:relative;">' +
+            '<div style="text-align:center;color:rgba(248,245,242,0.4);"><div style="font-size:2rem;">🎬</div><div style="font-size:0.62rem;margin-top:4px;">' + (imgs[slot.id + '_name'] || 'Video') + '</div></div>' +
+            '<div class="img-slot-badge" style="background:#3a6b3a;">✓ Video</div>' +
+          '</div>'
+          :
+          '<div class="img-slot-thumb" style="background-image:url(\'' + (thumb||'') + '\')">' +
+            (isCustomImg ? '<div class="img-slot-badge">✓ Tua foto</div>' : '') +
+          '</div>'
+        ) +
         '<div class="img-slot-info">' +
-          '<div class="img-slot-name">' + slot.label + '</div>' +
+          '<div class="img-slot-name">' + slot.label + (slot.video ? ' <span style="color:var(--beige);font-size:0.6rem;">🎬</span>' : '') + '</div>' +
           '<div class="img-slot-hint">' + slot.hint + '</div>' +
           '<div class="img-slot-actions">' +
-            '<button class="action-btn" onclick="event.stopPropagation();openImgPicker(\'' + slot.id + '\')">📷 Cambia</button>' +
+            '<button class="action-btn" onclick="event.stopPropagation();openImgPicker(\'' + slot.id + '\')">' + btnLabel + '</button>' +
             (isCustom ? '<button class="action-btn danger" onclick="event.stopPropagation();removeImg(\'' + slot.id + '\')">Ripristina</button>' : '') +
           '</div>' +
         '</div>' +
       '</div>';
     }).join('');
+
+    // Load video previews async
+    IMG_SLOTS.filter(function(s){ return s.video && imgs[s.id] === 'VIDEO'; }).forEach(function(slot) {
+      getVideoFromDB(slot.id, function(blob) {
+        if (!blob) return;
+        var thumb = document.getElementById('slot-thumb-' + slot.id);
+        if (!thumb) return;
+        var url = URL.createObjectURL(blob);
+        var v = document.createElement('video');
+        v.src = url; v.muted = true; v.autoplay = true; v.loop = true;
+        v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+        thumb.insertBefore(v, thumb.firstChild);
+      });
+    });
   }
 
   function openImgPicker(slotId) {
     currentImgSlot = slotId;
+    const slot = IMG_SLOTS.find(function(s){ return s.id === slotId; });
     const input = document.getElementById('imgFileInput');
+    input.accept = slot && slot.video ? 'image/*,video/mp4,video/webm,video/ogg' : 'image/*';
     input.value = '';
     input.click();
   }
@@ -918,32 +978,59 @@
   document.getElementById('imgFileInput').addEventListener('change', function() {
     const file = this.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { showToast('File troppo grande! Massimo 5MB', 'error'); return; }
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const imgs = getImages();
-      imgs[currentImgSlot] = e.target.result;
-      saveImages(imgs);
-      renderImageSlots();
-      const slotLabel = IMG_SLOTS.find(function(s){ return s.id === currentImgSlot; });
-      showToast('Foto aggiornata: ' + (slotLabel ? slotLabel.label : currentImgSlot), 'success');
-    };
-    reader.readAsDataURL(file);
+    const slotLabel = IMG_SLOTS.find(function(s){ return s.id === currentImgSlot; });
+    const labelName = slotLabel ? slotLabel.label : currentImgSlot;
+
+    if (file.type.startsWith('video/')) {
+      showToast('Caricamento video in corso…', 'warn');
+      saveVideoToDB(currentImgSlot, file, function() {
+        const imgs = getImages();
+        if (imgs[currentImgSlot] && imgs[currentImgSlot] !== 'VIDEO') delete imgs[currentImgSlot];
+        imgs[currentImgSlot] = 'VIDEO';
+        imgs[currentImgSlot + '_name'] = file.name;
+        saveImages(imgs);
+        renderImageSlots();
+        showToast('Video salvato: ' + labelName, 'success');
+      });
+    } else {
+      if (file.size > 5 * 1024 * 1024) { showToast('Immagine troppo grande! Massimo 5MB', 'error'); return; }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imgs = getImages();
+        if (imgs[currentImgSlot] === 'VIDEO') {
+          deleteVideoFromDB(currentImgSlot);
+          delete imgs[currentImgSlot + '_name'];
+        }
+        imgs[currentImgSlot] = e.target.result;
+        saveImages(imgs);
+        renderImageSlots();
+        showToast('Foto aggiornata: ' + labelName, 'success');
+      };
+      reader.readAsDataURL(file);
+    }
   });
 
   function removeImg(slotId) {
     const imgs = getImages();
+    if (imgs[slotId] === 'VIDEO') {
+      deleteVideoFromDB(slotId);
+      delete imgs[slotId + '_name'];
+    }
     delete imgs[slotId];
     saveImages(imgs);
     renderImageSlots();
-    showToast('Foto ripristinata al default', 'warn');
+    showToast('Ripristinato al default', 'warn');
   }
 
   function resetAllImages() {
-    if (!confirm('Ripristinare tutte le foto ai valori originali del sito?')) return;
+    if (!confirm('Ripristinare tutte le foto e video ai valori originali del sito?')) return;
     localStorage.removeItem('lareginella_images');
+    openVideoDB(function(db) {
+      if (!db) return;
+      db.transaction('videos', 'readwrite').objectStore('videos').clear();
+    });
     renderImageSlots();
-    showToast('Tutte le foto ripristinate ai default', 'warn');
+    showToast('Tutte le foto e video ripristinati ai default', 'warn');
   }
 
   // ── TOAST ──
