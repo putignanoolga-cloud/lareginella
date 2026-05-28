@@ -508,6 +508,18 @@
     .wa svg { width: 26px; height: 26px; fill: white; }
 
     @media (min-width: 900px) { .ham { display: none; } .nav-links { display: flex; } }
+
+    /* ── MOBILE HERO / NAV ── */
+    @media (max-width: 899px) {
+      /* Navbar: nascondi sottotitolo, e testo completo se c'è il logo immagine */
+      .nav-logo small { display: none; }
+      .nav-logo.has-logo-img .nav-logo-text { display: none; }
+
+      /* Hero: rimuovi eyebrow e sottotitolo */
+      .hero-eyebrow { display: none; }
+      .hero-sub { display: none; }
+      .hero-title { margin-bottom: 40px; }
+    }
   </style>
 </head>
 <body>
@@ -1192,7 +1204,11 @@
     if (imgs.logo) {
       ['navLogoImg','footerLogoImg'].forEach(function(id) {
         var el = document.getElementById(id);
-        if (el) { el.src = imgs.logo; el.style.display = 'block'; }
+        if (el) {
+          el.src = imgs.logo; el.style.display = 'block';
+          var parent = el.closest('.nav-logo');
+          if (parent) parent.classList.add('has-logo-img');
+        }
       });
     }
     if (imgs.hero_bg && imgs.hero_bg !== 'VIDEO') {
